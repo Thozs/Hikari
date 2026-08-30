@@ -121,6 +121,139 @@ Singleton {
     }
 
     // =========================================================================
+    // COLOR MANIPULATION HELPERS (HSL-based)
+    // =========================================================================
+    function _rgbToHsl(c) {
+        const r = c.r, g = c.g, b = c.b
+        const max = Math.max(r, g, b), min = Math.min(r, g, b)
+        let h = 0, s = 0, l = (max + min) / 2
+        if (max !== min) {
+            const d = max - min
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break
+                case g: h = (b - r) / d + 2; break
+                case b: h = (r - g) / d + 4; break
+            }
+            h /= 6
+        }
+        return { h: h, s: s, l: l }
+    }
+
+    function _hslToRgb(h, s, l) {
+        let r, g, b
+        if (s === 0) {
+            r = g = b = l
+        } else {
+            function hue2rgb(p, q, t) {
+                if (t < 0) t += 1
+                if (t > 1) t -= 1
+                if (t < 1/6) return p + (q - p) * 6 * t
+                if (t < 1/2) return q
+                if (t < 2/3) return p + (q - p) * (2/3 - t) * 6
+                return p
+            }
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s
+            const p = 2 * l - q
+            r = hue2rgb(p, q, h + 1/3)
+            g = hue2rgb(p, q, h)
+            b = hue2rgb(p, q, h - 1/3)
+        }
+        return Qt.rgba(r, g, b, 1)
+    }
+
+    function _adjustColor(c, saturationMult, lightnessOffset, targetHue) {
+        const hsl = root._rgbToHsl(c)
+        let newH = hsl.h
+        let newS = Math.max(0, Math.min(1, hsl.s * saturationMult))
+        let newL = Math.max(0, Math.min(1, hsl.l + lightnessOffset))
+        if (targetHue !== undefined) {
+            newH = hsl.h * 0.7 + targetHue * 0.3
+        }
+        return root._hslToRgb(newH, newS, newL)
+    }
+
+    function _getAccentHue() {
+        if (root._matugenLoaded && root._mAccent) {
+            return root._rgbToHsl(root._mAccent).h
+        }
+        return root._rgbToHsl(root._fixedAccent).h
+    }
+
+    // =========================================================================
+    // LAUNCHER COLOR COMPUTATION
+    // =========================================================================
+    function _computeLauncherBackground(baseBg, accent, isDark) {
+        if (isDark) {
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseBg, 1.8, 0.06, accentHue)
+        } else {
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseBg, 0.25, -0.03, accentHue)
+        }
+    }
+
+    function _computeLauncherSurface(baseSurface, accent, isDark) {
+        if (isDark) {
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseSurface, 2.0, 0.08, accentHue)
+        } else {
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseSurface, 0.3, -0.02, accentHue)
+        }
+    }
+
+    function _computeLauncherSurfaceHigh(baseSurface, accent, isDark) {
+        if (isDark) {
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseSurface, 2.5, 0.12, accentHue)
+        } else {
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseSurface, 0.4, -0.01, accentHue)
+        }
+    }
+
+    function _computeLauncherSearchBackground(baseSurfaceLow, accent, isDark) {
+        if (isDark) {
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseSurfaceLow, 1.5, -0.04, accentHue)
+        } else {
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseSurfaceLow, 0.2, 0.02, accentHue)
+        }
+    }
+
+    function _computeLauncherSearchBorder(baseOutlineVariant, accent, isDark) {
+        if (isDark) {
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseOutlineVariant, 2.0, 0.15, accentHue)
+        } else {
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseOutlineVariant, 0.5, -0.05, accentHue)
+        }
+    }
+
+    function _computeLauncherListBorder(baseOutline, accent, isDark) {
+        if (isDark) {
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseOutline, 1.5, 0.1, accentHue)
+        } else {
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseOutline, 0.3, -0.08, accentHue)
+        }
+    }
+
+    function _computeLauncherSelectedBg(baseSurfaceHigh, accent, isDark) {
+        if (isDark) {
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseSurfaceHigh, 3.0, 0.1, accentHue)
+        } else {
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseSurfaceHigh, 0.5, -0.02, accentHue)
+        }
+    }
+
+    // =========================================================================
     // INTEGRAÇÃO COM MATUGEN VIA PROCESS
     // =========================================================================
     property bool _matugenLoaded: false
