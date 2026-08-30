@@ -60,9 +60,10 @@ Singleton {
                 const lines = text.split("\n").filter(l => l.length > 0)
                 root.localList = lines.map(l => {
                     const parts = l.split("\t")
-                    return { name: parts[1], path: parts[2] }
+                    return { name: parts[1], path: parts[2], modified: parseFloat(parts[0]) }
                 })
                 root.localScanned = true
+                console.log("[Wallpaper] scanLocal: " + root.localList.length + " wallpapers encontrados")
             }
         }
     }
@@ -223,6 +224,8 @@ Singleton {
                 if (exitCode === 0 && root.resizeTool !== "") {
                     const cmd = root._resizeCmd(tmpPath, outPath, width, height, fillMode) + " && rm -f '" + tmpPath + "'"
                     Quickshell.execDetached(["sh", "-c", cmd])
+                    // Atualiza a lista local após salvar
+                    root.scanLocal()
                 }
                 destroy()
             }
@@ -235,19 +238,20 @@ Singleton {
         const extMatch = url.match(/\.([a-zA-Z0-9]+)$/)
         const ext = extMatch ? extMatch[1] : "jpg"
         const filename = "wallhaven_" + wallpaper.id + "." + ext
-
-        const already = root.localList.some(w => w.name === filename)
-        if (already) {
-            root.originalReady(wallpaper.id, filename)
-            return
-        }
-
         const outPath = wallsDir + "/" + filename
-        const cmd = "mkdir -p '" + wallsDir + "' && curl -L -s -o '" + outPath + "' '" + url + "'"
-        const proc = downloadOriginalComp.createObject(root, {
-            command: ["sh", "-c", cmd], filename: filename, wallpaperId: wallpaper.id
-        })
-        proc.running = true
+
+        // Verifica se arquivo já existe no disco (mais confiável que localList)
+        const checkCmd = "test -f '" + outPath.replace(/'/g, "'\\''") + "'"
+        const checkProc = Qt.createQmlObject('import QtQuick; QtObject { function run() { var p = new Process(); p.command = ["sh", "-c", "' + checkCmd + '"]; p.running = true; p.onExited = (code) => { if (code === 0) { originalReady("' + wallpaper.id + '", "' + filename + '"); } else { download(); } }; } }', root)
+        checkProc.run()
+
+        function download() {
+            const cmd = "mkdir -p '" + wallsDir + "' && curl -L -s -o '" + outPath + "' '" + url + "'"
+            const proc = downloadOriginalComp.createObject(root, {
+                command: ["sh", "-c", cmd], filename: filename, wallpaperId: wallpaper.id
+            })
+            proc.running = true
+        }
     }
 
     Component {
@@ -276,7 +280,8 @@ Singleton {
         const cmd = "mkdir -p '" + cacheDir + "' && curl -L -s -o '" + tmpPath + "' '" + url + "'"
         const proc = downloadApplyComp.createObject(root, {
             command: ["sh", "-c", cmd], tmpPath: tmpPath,
-            width: width || 0, height: height || 0, fillMode: fillMode || 1
+            width: width || 0, height: height || 0, fillMode: fillMode || 1,
+            wallpaperId: wallpaper.id, wallpaperUrl: url
         })
         proc.running = true
     }
@@ -288,8 +293,20 @@ Singleton {
             property int width: 0
             property int height: 0
             property int fillMode: 1
+            property string wallpaperId: ""
+            property string wallpaperUrl: ""
             onExited: (exitCode) => {
                 if (exitCode === 0) {
+                    // Salva cópia na pasta local (wallsDir) para aparecer em "Minha Pasta"
+                    const extMatch = wallpaperUrl.match(/\.([a-zA-Z0-9]+)$/)
+                    const ext = extMatch ? extMatch[1] : "jpg"
+                    const localFilename = "wallhaven_" + wallpaperId + "." + ext
+                    const localPath = wallsDir + "/" + localFilename
+                    const saveCmd = "mkdir -p '" + wallsDir + "' && cp '" + tmpPath + "' '" + localPath + "'"
+                    Quickshell.execDetached(["sh", "-c", saveCmd])
+                    // Atualiza a lista local após salvar
+                    root.scanLocal()
+
                     if (width > 0 && height > 0)
                         root.applyWithResize(tmpPath, width, height, fillMode)
                     else
