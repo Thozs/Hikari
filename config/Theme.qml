@@ -117,7 +117,7 @@ Singleton {
             "matugen", "image",
             "--json", "hex",
             "--mode", root.isDark ? "dark" : "light",
-            "--prefer", "vibrant",
+            "--type", "scheme-tonal-spot",
             root._wallpaperPath
         ]
         matugenProc.running = true
