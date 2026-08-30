@@ -31,7 +31,7 @@ Item {
         anchors.centerIn: parent
         visible: root.iconSrc === ""
         text: "🐧"
-        color: Theme.text
+        color: Theme.barText
         font.pixelSize: Math.round(root.thickness * 0.34)
     }
 

@@ -68,7 +68,7 @@ Scope {
                 id: pill
                 anchors.fill: parent
                 radius: panel.pillRadius
-                color: Theme.background
+                color: Theme.barBackground
 
                 // Grupo do topo: icone do launcher colado nos workspaces
                 Loader {
@@ -153,13 +153,13 @@ Scope {
                             Text {
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 text: root.hours
-                                color: Theme.text
+                                color: Theme.barText
                                 font.pixelSize: Math.round(panel.thickness * 0.34)
                             }
                             Text {
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 text: root.minutes
-                                color: Theme.text
+                                color: Theme.barText
                                 font.pixelSize: Math.round(panel.thickness * 0.34)
                             }
                         }
@@ -184,7 +184,7 @@ Scope {
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text: root.hours + ":" + root.minutes
-                            color: Theme.text
+                            color: Theme.barText
                             font.pixelSize: Math.round(panel.thickness * 0.40)
                         }
                     }

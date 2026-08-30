@@ -34,7 +34,7 @@ Item {
         id: icon
         anchors.centerIn: parent
         text: Audio.muted ? "🔇" : "🔊"
-        color: Theme.text
+        color: Theme.barText
         font.pixelSize: Math.round(root.thickness * 0.30)
     }
 
@@ -82,7 +82,7 @@ Item {
             id: content
             anchors.fill: parent
             radius: 12
-            color: Theme.background
+            color: Theme.barBackground
         }
 
         HoverHandler {
@@ -107,14 +107,14 @@ Item {
                 Layout.fillWidth: true
                 Text {
                     text: "Saída"
-                    color: Theme.text
+                    color: Theme.barText
                     font.pixelSize: 13
                     font.bold: true
                 }
                 Item { Layout.fillWidth: true }
                 Text {
                     text: Audio.muted ? "Mudo" : Math.round(Audio.volume * 100) + "%"
-                    color: Theme.text
+                    color: Theme.barText
                     font.pixelSize: 13
                 }
             }
@@ -123,7 +123,7 @@ Item {
                 Layout.fillWidth: true
                 implicitHeight: 30
                 radius: 6
-                color: Qt.lighter(Theme.background, 1.4)
+                color: Qt.lighter(Theme.barBackground, 1.4)
 
                 RowLayout {
                     anchors.fill: parent
@@ -135,13 +135,13 @@ Item {
                         Layout.fillWidth: true
                         elide: Text.ElideRight
                         text: Audio.sink?.description || Audio.sink?.name || "Nenhum"
-                        color: Theme.text
+                        color: Theme.barText
                         font.pixelSize: 12
                     }
 
                     Text {
                         text: root.sinksExpanded ? "▲" : "▼"
-                        color: Theme.text
+                        color: Theme.barText
                         font.pixelSize: 10
                     }
                 }
@@ -175,7 +175,7 @@ Item {
                             anchors.rightMargin: 8
                             elide: Text.ElideRight
                             text: sinkRow.modelData.description || sinkRow.modelData.name
-                            color: Theme.text
+                            color: Theme.barText
                             font.pixelSize: 12
                             opacity: 0.75
                             visible: sinkRow.visible
@@ -205,14 +205,14 @@ Item {
                 Layout.topMargin: 6
                 Text {
                     text: "Entrada (microfone)"
-                    color: Theme.text
+                    color: Theme.barText
                     font.pixelSize: 13
                     font.bold: true
                 }
                 Item { Layout.fillWidth: true }
                 Text {
                     text: Audio.sourceMuted ? "Mudo" : Math.round(Audio.sourceVolume * 100) + "%"
-                    color: Theme.text
+                    color: Theme.barText
                     font.pixelSize: 13
                 }
             }
@@ -221,7 +221,7 @@ Item {
                 Layout.fillWidth: true
                 implicitHeight: 30
                 radius: 6
-                color: Qt.lighter(Theme.background, 1.4)
+                color: Qt.lighter(Theme.barBackground, 1.4)
 
                 RowLayout {
                     anchors.fill: parent
@@ -233,13 +233,13 @@ Item {
                         Layout.fillWidth: true
                         elide: Text.ElideRight
                         text: Audio.source?.description || Audio.source?.name || "Nenhum"
-                        color: Theme.text
+                        color: Theme.barText
                         font.pixelSize: 12
                     }
 
                     Text {
                         text: root.sourcesExpanded ? "▲" : "▼"
-                        color: Theme.text
+                        color: Theme.barText
                         font.pixelSize: 10
                     }
                 }
@@ -273,7 +273,7 @@ Item {
                             anchors.rightMargin: 8
                             elide: Text.ElideRight
                             text: sourceRow.modelData.description || sourceRow.modelData.name
-                            color: Theme.text
+                            color: Theme.barText
                             font.pixelSize: 12
                             opacity: 0.75
                             visible: sourceRow.visible

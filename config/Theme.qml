@@ -26,6 +26,7 @@ Singleton {
     // PROPRIEDADES PÚBLICAS
     // =========================================================================
     property bool dynamicColorEnabled: true
+    property bool barUseMatugen: true
     property string _wallpaperPath: ""
 
     // Propriedades expostas (calculadas dinamicamente via matugen ou fallback)
@@ -45,6 +46,20 @@ Singleton {
     readonly property color accentText: (root.dynamicColorEnabled && root._matugenLoaded) ? root._mAccentText : root._fixedAccentText
 
     readonly property color danger: (root.dynamicColorEnabled && root._matugenLoaded) ? root._mDanger : root._fixedDanger
+
+    // Propriedades específicas da bar (respeitam barUseMatugen)
+    readonly property color barBackground: (root.barUseMatugen && root._matugenLoaded) ? root._mBackground : root._fixedBackground
+    readonly property color barSurfaceLow: (root.barUseMatugen && root._matugenLoaded) ? root._mSurfaceLow : root._fixedSurfaceLow
+    readonly property color barSurface: (root.barUseMatugen && root._matugenLoaded) ? root._mSurface : root._fixedSurface
+    readonly property color barSurfaceHigh: (root.barUseMatugen && root._matugenLoaded) ? root._mSurfaceHigh : root._fixedSurfaceHigh
+    readonly property color barSurfaceHighest: (root.barUseMatugen && root._matugenLoaded) ? root._mSurfaceHighest : root._fixedSurfaceHighest
+    readonly property color barText: (root.barUseMatugen && root._matugenLoaded) ? root._mText : root._fixedText
+    readonly property color barTextMuted: (root.barUseMatugen && root._matugenLoaded) ? root._mTextMuted : root._fixedTextMuted
+    readonly property color barOutline: (root.barUseMatugen && root._matugenLoaded) ? root._mOutline : root._fixedOutline
+    readonly property color barOutlineVariant: (root.barUseMatugen && root._matugenLoaded) ? root._mOutlineVariant : root._fixedOutlineVariant
+    readonly property color barAccent: (root.barUseMatugen && root._matugenLoaded) ? root._mAccent : root._fixedAccent
+    readonly property color barAccentText: (root.barUseMatugen && root._matugenLoaded) ? root._mAccentText : root._fixedAccentText
+    readonly property color barDanger: (root.barUseMatugen && root._matugenLoaded) ? root._mDanger : root._fixedDanger
 
     // =========================================================================
     // ISDARK & DEBUG
