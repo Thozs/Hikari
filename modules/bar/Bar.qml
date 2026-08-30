@@ -92,37 +92,15 @@ Scope {
                     }
                     spacing: 10
 
-                    // Launcher Button com fundo pílula
-                    Rectangle {
+                    LauncherButton {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        width: Math.round(panel.thickness * 0.6) + 12
-                        height: Math.round(panel.thickness * 0.6) + 12
-                        radius: width / 2
-                        color: Theme.moduleBackground
-                        border.color: Theme.moduleBorder
-                        border.width: 1
-
-                        LauncherButton {
-                            anchors.centerIn: parent
-                            thickness: panel.thickness
-                        }
+                        thickness: panel.thickness
                     }
 
-                    // Workspaces com fundo pílula
-                    Rectangle {
+                    Workspaces {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        width: Math.round(panel.thickness * 0.55) * 5 + 8 * 4 + 16
-                        height: Math.round(panel.thickness * 0.55) + 12
-                        radius: height / 2
-                        color: Theme.moduleBackground
-                        border.color: Theme.moduleBorder
-                        border.width: 1
-
-                        Workspaces {
-                            anchors.centerIn: parent
-                            vertical: true
-                            cellSize: Math.round(panel.thickness * 0.55)
-                        }
+                        vertical: true
+                        cellSize: Math.round(panel.thickness * 0.55)
                     }
                 }
 
@@ -135,52 +113,30 @@ Scope {
                     }
                     spacing: 10
 
-                    // AudioIndicator com fundo pílula
-                    Rectangle {
+                    AudioIndicator {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        width: Math.round(panel.thickness * 0.6) + 12
-                        height: Math.round(panel.thickness * 0.6) + 12
-                        radius: width / 2
-                        color: Theme.moduleBackground
-                        border.color: Theme.moduleBorder
-                        border.width: 1
-
-                        AudioIndicator {
-                            anchors.centerIn: parent
-                            thickness: panel.thickness
-                            vertical: true
-                            screenRef: panel.screen
-                            barPosition: Settings.barPosition
-                            barMargin: Settings.barMargin
-                            edgeInset: panel.lengthInset
-                        }
+                        thickness: panel.thickness
+                        vertical: true
+                        screenRef: panel.screen
+                        barPosition: Settings.barPosition
+                        barMargin: Settings.barMargin
+                        edgeInset: panel.lengthInset
                     }
 
-                    // Relógio com fundo pílula
-                    Rectangle {
+                    Column {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        width: Math.round(panel.thickness * 0.40) * 2 + 20
-                        height: Math.round(panel.thickness * 0.34) * 2 + 2 + 12
-                        radius: height / 2
-                        color: Theme.moduleBackground
-                        border.color: Theme.moduleBorder
-                        border.width: 1
-
-                        Column {
-                            anchors.centerIn: parent
-                            spacing: 2
-                            Text {
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                text: root.hours
-                                color: Theme.barText
-                                font.pixelSize: Math.round(panel.thickness * 0.34)
-                            }
-                            Text {
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                text: root.minutes
-                                color: Theme.barText
-                                font.pixelSize: Math.round(panel.thickness * 0.34)
-                            }
+                        spacing: 2
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: root.hours
+                            color: Theme.barText
+                            font.pixelSize: Math.round(panel.thickness * 0.34)
+                        }
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: root.minutes
+                            color: Theme.barText
+                            font.pixelSize: Math.round(panel.thickness * 0.34)
                         }
                     }
                 }
@@ -203,35 +159,15 @@ Scope {
                     }
                     spacing: 8
 
-                    // Launcher Button com fundo pílula
-                    Rectangle {
-                        width: Math.round(panel.thickness * 0.6) + 12
-                        height: Math.round(panel.thickness * 0.6) + 12
-                        radius: width / 2
-                        color: Theme.moduleBackground
-                        border.color: Theme.moduleBorder
-                        border.width: 1
-
-                        LauncherButton {
-                            anchors.centerIn: parent
-                            thickness: panel.thickness
-                        }
+                    LauncherButton {
+                        anchors.verticalCenter: parent.verticalCenter
+                        thickness: panel.thickness
                     }
 
-                    // Workspaces com fundo pílula
-                    Rectangle {
-                        width: Math.round(panel.thickness * 0.55) * 5 + 8 * 4 + 16
-                        height: Math.round(panel.thickness * 0.55) + 12
-                        radius: height / 2
-                        color: Theme.moduleBackground
-                        border.color: Theme.moduleBorder
-                        border.width: 1
-
-                        Workspaces {
-                            anchors.centerIn: parent
-                            vertical: false
-                            cellSize: Math.round(panel.thickness * 0.55)
-                        }
+                    Workspaces {
+                        anchors.verticalCenter: parent.verticalCenter
+                        vertical: false
+                        cellSize: Math.round(panel.thickness * 0.55)
                     }
                 }
 
@@ -244,41 +180,21 @@ Scope {
                     }
                     spacing: 8
 
-                    // AudioIndicator com fundo pílula
-                    Rectangle {
-                        width: Math.round(panel.thickness * 0.6) + 12
-                        height: Math.round(panel.thickness * 0.6) + 12
-                        radius: width / 2
-                        color: Theme.moduleBackground
-                        border.color: Theme.moduleBorder
-                        border.width: 1
-
-                        AudioIndicator {
-                            anchors.centerIn: parent
-                            thickness: panel.thickness
-                            vertical: false
-                            screenRef: panel.screen
-                            barPosition: Settings.barPosition
-                            barMargin: Settings.barMargin
-                            edgeInset: panel.lengthInset
-                        }
+                    AudioIndicator {
+                        anchors.verticalCenter: parent.verticalCenter
+                        thickness: panel.thickness
+                        vertical: false
+                        screenRef: panel.screen
+                        barPosition: Settings.barPosition
+                        barMargin: Settings.barMargin
+                        edgeInset: panel.lengthInset
                     }
 
-                    // Relógio com fundo pílula
-                    Rectangle {
-                        width: Math.round(panel.thickness * 0.40) * 2 + 20
-                        height: Math.round(panel.thickness * 0.40) + 12
-                        radius: height / 2
-                        color: Theme.moduleBackground
-                        border.color: Theme.moduleBorder
-                        border.width: 1
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: root.hours + ":" + root.minutes
-                            color: Theme.barText
-                            font.pixelSize: Math.round(panel.thickness * 0.40)
-                        }
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: root.hours + ":" + root.minutes
+                        color: Theme.barText
+                        font.pixelSize: Math.round(panel.thickness * 0.40)
                     }
                 }
             }
