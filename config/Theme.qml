@@ -68,12 +68,13 @@ Singleton {
     readonly property bool isDark: root._computeIsDark(root.wallpaperColors)
     readonly property color wallpaperAccent: root.accent
 
-    // ColorQuantizer leve mantido apenas para decidir isDark (modo do matugen)
+    // ColorQuantizer mantido apenas para decidir isDark (modo do matugen)
+    // depth: 5 = 32 cores (melhor amostragem para detectar claro/escuro)
     ColorQuantizer {
         id: wallpaperQuantizer
         source: (root.dynamicColorEnabled && root._wallpaperPath !== "") ? Qt.resolvedUrl(root._wallpaperPath) : ""
         rescaleSize: 64
-        depth: 3
+        depth: 5
     }
 
     function _relativeLuminance(c) {
@@ -120,7 +121,7 @@ Singleton {
             "--json", "hex",
             "--mode", root.isDark ? "dark" : "light",
             "--type", "scheme-tonal-spot",
-            "--prefer", "saturation",
+            "--source-color-index", "0",
             root._wallpaperPath
         ]
         matugenProc.running = true
