@@ -297,8 +297,8 @@ Singleton {
                     const localFilename = "wallhaven_" + wallpaperId + "." + ext
                     const localPath = wallsDir + "/" + localFilename
                     const saveCmd = "mkdir -p '" + wallsDir + "' && cp '" + tmpPath + "' '" + localPath + "'"
-                    // Usa Process síncrono para garantir que o arquivo seja copiado antes do scanLocal
-                    const saveProc = Qt.createQmlObject('import QtQuick; Process { command: ["sh", "-c", "' + saveCmd.replace(/"/g, '\\"') + '"]; running: true; onExited: (code) => { if (code === 0) root.scanLocal(); destroy(); } }', root)
+                    // Usa componente Process reutilizável para cópia síncrona
+                    const saveProc = saveLocalComp.createObject(root, { command: ["sh", "-c", saveCmd] })
                     saveProc.running = true
 
                     if (width > 0 && height > 0)
@@ -308,6 +308,18 @@ Singleton {
                 } else {
                     root.lastError = "Falha ao baixar wallpaper (exit " + exitCode + ")"
                     root.searchFailed(root.lastError)
+                }
+                destroy()
+            }
+        }
+    }
+
+    Component {
+        id: saveLocalComp
+        Process {
+            onExited: (exitCode) => {
+                if (exitCode === 0) {
+                    root.scanLocal()
                 }
                 destroy()
             }
