@@ -26,7 +26,14 @@ Scope {
 
         if (query.startsWith("/")) {
             const actions = [
-                { label: "Sair do Arnyx Shell", kind: "action", command: "quit" }
+                { label: "🔄 Recarregar Shell", kind: "action", command: "reload" },
+                { label: "🔧 Reiniciar Shell", kind: "action", command: "restart" },
+                { label: "📝 Editar Configuração", kind: "action", command: "edit-config" },
+                { label: "🖼️ Abrir Seletor de Wallpaper", kind: "action", command: "wallpaper" },
+                { label: "🔊 Abrir Controle de Áudio", kind: "action", command: "audio" },
+                { label: "🌙 Alternar Tema Claro/Escuro", kind: "action", command: "toggle-theme" },
+                { label: "📊 Mostrar Informações do Sistema", kind: "action", command: "sysinfo" },
+                { label: "❌ Sair do Arnyx Shell", kind: "action", command: "quit" }
             ]
             const q = query.slice(1).trim().toLowerCase()
             if (q.length === 0) return actions
@@ -59,7 +66,7 @@ Scope {
 
             property int itemHeight: 64
             property int visibleItems: 5
-            property int searchHeight: 26
+            property int searchHeight: 28
             property int panelMargins: 12
             property int panelSpacing: 8
 
@@ -81,7 +88,7 @@ Scope {
             margins.bottom: -win.implicitHeight
 
             Behavior on margins.bottom {
-                NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+                NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
             }
 
             Component.onCompleted: margins.bottom = win.openMargin
@@ -94,8 +101,26 @@ Scope {
                     item.entry.execute()
                 } else if (item.kind === "command") {
                     Quickshell.execDetached(["kitty", "-e", "sh", "-c", item.command])
-                } else if (item.kind === "action" && item.command === "quit") {
-                    Qt.quit()
+                } else if (item.kind === "action") {
+                    if (item.command === "quit") {
+                        Qt.quit()
+                    } else if (item.command === "reload") {
+                        Quickshell.execDetached(["quickshell", "kill", "-c", "arnyx-qs"])
+                        Quickshell.execDetached(["quickshell", "-c", "arnyx-qs"])
+                    } else if (item.command === "restart") {
+                        Quickshell.execDetached(["quickshell", "kill", "-c", "arnyx-qs"])
+                        Quickshell.execDetached(["quickshell", "-c", "arnyx-qs"])
+                    } else if (item.command === "edit-config") {
+                        Quickshell.execDetached(["kitty", "-e", "nvim", "~/.config/quickshell/arnyx-qs"])
+                    } else if (item.command === "wallpaper") {
+                        Quickshell.execDetached(["quickshell", "ipc", "-c", "arnyx-qs", "call", "wallpaper", "toggle"])
+                    } else if (item.command === "audio") {
+                        Quickshell.execDetached(["quickshell", "ipc", "-c", "arnyx-qs", "call", "audio", "toggle"])
+                    } else if (item.command === "toggle-theme") {
+                        Theme.dynamicColorEnabled = !Theme.dynamicColorEnabled
+                    } else if (item.command === "sysinfo") {
+                        Quickshell.execDetached(["kitty", "-e", "fastfetch"])
+                    }
                 }
 
                 root.open = false
@@ -103,12 +128,13 @@ Scope {
             }
 
             Rectangle {
+                id: content
                 anchors.fill: parent
                 radius: 12
                 bottomLeftRadius: 0
                 bottomRightRadius: 0
-                color: Theme.barBackground
-                border.color: Theme.barOutlineVariant
+                color: Theme.launcherBackground
+                border.color: Theme.launcherListBorder
                 border.width: 1
 
                 Column {
@@ -116,83 +142,134 @@ Scope {
                     anchors.margins: win.panelMargins
                     spacing: win.panelSpacing
 
-                    ListView {
-                        id: resultsList
+                    // Área da lista de resultados
+                    Rectangle {
+                        id: listContainer
                         width: parent.width
                         height: win.itemHeight * win.visibleItems
+                        radius: 8
+                        color: Theme.launcherSurface
+                        border.color: Theme.launcherListBorder
+                        border.width: 1
                         clip: true
-                        currentIndex: 0
 
-                        model: ScriptModel {
-                            values: root.filteredEntries(search.text)
-                        }
+                        ListView {
+                            id: resultsList
+                            anchors.fill: parent
+                            clip: true
+                            currentIndex: 0
+                            focus: true
 
-                        delegate: Rectangle {
-                            required property var modelData
-                            required property int index
-                            width: resultsList.width
-                            height: win.itemHeight
-                            color: index === resultsList.currentIndex ? Theme.surface : "transparent"
-                            radius: 6
+                            model: ScriptModel {
+                                values: root.filteredEntries(search.text)
+                            }
 
-                            Row {
-                                anchors.verticalCenter: parent.verticalCenter
-                                anchors.left: parent.left
-                                anchors.leftMargin: 14
-                                spacing: 12
+                            delegate: Rectangle {
+                                required property var modelData
+                                required property int index
+                                width: resultsList.width
+                                height: win.itemHeight
+                                color: index === resultsList.currentIndex ? Theme.launcherSelectedBg : "transparent"
+                                radius: 4
 
-                                Image {
-                                    width: 34
-                                    height: 34
+                                Row {
                                     anchors.verticalCenter: parent.verticalCenter
-                                    visible: modelData.kind === "app" && !!modelData.entry.icon
-                                    source: (modelData.kind === "app" && modelData.entry.icon)
-                                        ? Quickshell.iconPath(modelData.entry.icon, "")
-                                        : ""
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: 14
+                                    spacing: 12
+
+                                    Image {
+                                        width: 34
+                                        height: 34
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        visible: modelData.kind === "app" && !!modelData.entry.icon
+                                        source: (modelData.kind === "app" && modelData.entry.icon)
+                                            ? Quickshell.iconPath(modelData.entry.icon, "")
+                                            : ""
+                                    }
+
+                                    Text {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: modelData.label
+                                        color: Theme.launcherText
+                                        font.pixelSize: 19
+                                        elide: Text.ElideRight
+                                        width: parent.width - 60
+                                    }
                                 }
 
-                                Text {
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    text: modelData.label
-                                    color: Theme.text
-                                    font.pixelSize: 19
+                                MouseArea {
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    onEntered: resultsList.currentIndex = index
+                                    onClicked: win.activate(index)
                                 }
                             }
 
-                            MouseArea {
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                onEntered: resultsList.currentIndex = index
-                                onClicked: win.activate(index)
+                            // Navegação por teclado direta na lista
+                            Keys.onPressed: (event) => {
+                                if (event.key === Qt.Key_Down) {
+                                    resultsList.currentIndex = Math.min(resultsList.currentIndex + 1, resultsList.count - 1)
+                                    event.accepted = true
+                                } else if (event.key === Qt.Key_Up) {
+                                    resultsList.currentIndex = Math.max(resultsList.currentIndex - 1, 0)
+                                    event.accepted = true
+                                } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                                    win.activate(resultsList.currentIndex)
+                                    event.accepted = true
+                                } else if (event.key === Qt.Key_Escape) {
+                                    root.open = false
+                                    search.text = ""
+                                    event.accepted = true
+                                }
                             }
                         }
                     }
 
-                    Rectangle { width: parent.width; height: 1; color: Theme.surface }
+                    // Separador
+                    Rectangle {
+                        width: parent.width
+                        height: 1
+                        color: Theme.launcherListBorder
+                        opacity: 0.5
+                    }
 
-                    TextInput {
-                        id: search
+                    // Barra de pesquisa
+                    Rectangle {
+                        id: searchContainer
                         width: parent.width
                         height: win.searchHeight
-                        color: Theme.text
-                        font.pixelSize: 16
-                        focus: true
-                        clip: true
+                        radius: 6
+                        color: Theme.launcherSearchBackground
+                        border.color: Theme.launcherSearchBorder
+                        border.width: 1.5
 
-                        Keys.onPressed: (event) => {
-                            if (event.key === Qt.Key_Escape) {
-                                root.open = false
-                                search.text = ""
-                                event.accepted = true
-                            } else if (event.key === Qt.Key_Down) {
-                                resultsList.currentIndex = Math.min(resultsList.currentIndex + 1, resultsList.count - 1)
-                                event.accepted = true
-                            } else if (event.key === Qt.Key_Up) {
-                                resultsList.currentIndex = Math.max(resultsList.currentIndex - 1, 0)
-                                event.accepted = true
-                            } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                                win.activate(resultsList.currentIndex)
-                                event.accepted = true
+                        TextInput {
+                            id: search
+                            anchors.fill: parent
+                            anchors.margins: 10
+                            color: Theme.launcherText
+                            font.pixelSize: 16
+                            focus: true
+                            clip: true
+                            selectByMouse: true
+
+                            Keys.onPressed: (event) => {
+                                // Teclas de navegação vão direto para a lista
+                                if (event.key === Qt.Key_Down || event.key === Qt.Key_Up) {
+                                    resultsList.forceActiveFocus()
+                                    resultsList.currentIndex = event.key === Qt.Key_Down ? 0 : resultsList.count - 1
+                                    event.accepted = true
+                                } else if (event.key === Qt.Key_Escape) {
+                                    root.open = false
+                                    search.text = ""
+                                    event.accepted = true
+                                } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                                    if (resultsList.count > 0) {
+                                        win.activate(resultsList.currentIndex)
+                                    }
+                                    event.accepted = true
+                                }
                             }
                         }
                     }

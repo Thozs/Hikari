@@ -62,6 +62,35 @@ Singleton {
     readonly property color barDanger: (root.barUseMatugen && root._matugenLoaded) ? root._mDanger : root._fixedDanger
 
     // =========================================================================
+    // LAUNCHER COLORS (com contraste melhorado)
+    // =========================================================================
+    readonly property color launcherBackground: (root.barUseMatugen && root._matugenLoaded)
+        ? root._computeLauncherBackground(root._mBackground, root._mAccent, root.isDark)
+        : root._fixedBackground
+    readonly property color launcherSurface: (root.barUseMatugen && root._matugenLoaded)
+        ? root._computeLauncherSurface(root._mSurface, root._mAccent, root.isDark)
+        : root._fixedSurface
+    readonly property color launcherSurfaceHigh: (root.barUseMatugen && root._matugenLoaded)
+        ? root._computeLauncherSurfaceHigh(root._mSurfaceHigh, root._mAccent, root.isDark)
+        : root._fixedSurfaceHigh
+    readonly property color launcherSearchBackground: (root.barUseMatugen && root._matugenLoaded)
+        ? root._computeLauncherSearchBackground(root._mSurfaceLow, root._mAccent, root.isDark)
+        : root._fixedSurfaceLow
+    readonly property color launcherSearchBorder: (root.barUseMatugen && root._matugenLoaded)
+        ? root._computeLauncherSearchBorder(root._mOutlineVariant, root._mAccent, root.isDark)
+        : root._fixedOutlineVariant
+    readonly property color launcherListBorder: (root.barUseMatugen && root._matugenLoaded)
+        ? root._computeLauncherListBorder(root._mOutline, root._mAccent, root.isDark)
+        : root._fixedOutline
+    readonly property color launcherText: (root.barUseMatugen && root._matugenLoaded) ? root._mText : root._fixedText
+    readonly property color launcherTextMuted: (root.barUseMatugen && root._matugenLoaded) ? root._mTextMuted : root._fixedTextMuted
+    readonly property color launcherAccent: (root.barUseMatugen && root._matugenLoaded) ? root._mAccent : root._fixedAccent
+    readonly property color launcherAccentText: (root.barUseMatugen && root._matugenLoaded) ? root._mAccentText : root._fixedAccentText
+    readonly property color launcherSelectedBg: (root.barUseMatugen && root._matugenLoaded)
+        ? root._computeLauncherSelectedBg(root._mSurfaceHigh, root._mAccent, root.isDark)
+        : root._fixedSurfaceHigh
+
+    // =========================================================================
     // ISDARK & DEBUG
     // =========================================================================
     readonly property list<color> wallpaperColors: (root.dynamicColorEnabled && wallpaperQuantizer.colors.length > 0) ? wallpaperQuantizer.colors : []
