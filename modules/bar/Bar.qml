@@ -2,7 +2,6 @@ import Quickshell
 import Quickshell.Io
 import QtQuick
 import QtQuick.Controls
-import QtGraphicalEffects
 import "../../config"
 
 Scope {
@@ -74,6 +73,14 @@ Scope {
                 anchors.fill: parent
                 visible: root.vertical
 
+            // ============================================================
+            // LAYOUT VERTICAL (barra na esquerda/direita)
+            // ============================================================
+            Item {
+                id: verticalLayout
+                anchors.fill: parent
+                visible: root.vertical
+
                 // Grupo do topo: LauncherButton + Workspaces
                 // Preenche do topo (com inset) até o centro
                 Rectangle {
@@ -92,16 +99,6 @@ Scope {
                     color: Theme.moduleBackground
                     border.color: Theme.moduleBorder
                     border.width: 1
-
-                    // Sombra sutil para o grupo do topo
-                    layer.enabled: true
-                    layer.effect: QtGraphicalEffects.DropShadow {
-                        horizontalOffset: 0
-                        verticalOffset: 1
-                        radius: 4
-                        samples: 8
-                        color: Qt.rgba(0, 0, 0, 0.15)
-                    }
 
                     Column {
                         anchors.centerIn: parent
@@ -138,16 +135,6 @@ Scope {
                     color: Theme.moduleBackground
                     border.color: Theme.moduleBorder
                     border.width: 1
-
-                    // Sombra sutil para o grupo de baixo
-                    layer.enabled: true
-                    layer.effect: QtGraphicalEffects.DropShadow {
-                        horizontalOffset: 0
-                        verticalOffset: 1
-                        radius: 4
-                        samples: 8
-                        color: Qt.rgba(0, 0, 0, 0.15)
-                    }
 
                     Column {
                         anchors.centerIn: parent
@@ -209,16 +196,6 @@ Scope {
                     border.color: Theme.moduleBorder
                     border.width: 1
 
-                    // Sombra sutil
-                    layer.enabled: true
-                    layer.effect: QtGraphicalEffects.DropShadow {
-                        horizontalOffset: 1
-                        verticalOffset: 0
-                        radius: 4
-                        samples: 8
-                        color: Qt.rgba(0, 0, 0, 0.15)
-                    }
-
                     Row {
                         anchors.centerIn: parent
                         spacing: 6
@@ -253,16 +230,6 @@ Scope {
                     color: Theme.moduleBackground
                     border.color: Theme.moduleBorder
                     border.width: 1
-
-                    // Sombra sutil
-                    layer.enabled: true
-                    layer.effect: QtGraphicalEffects.DropShadow {
-                        horizontalOffset: -1
-                        verticalOffset: 0
-                        radius: 4
-                        samples: 8
-                        color: Qt.rgba(0, 0, 0, 0.15)
-                    }
 
                     Row {
                         anchors.centerIn: parent
