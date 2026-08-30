@@ -15,7 +15,7 @@ Item {
     signal wallpaperSelected(string wallpaperId)
 
     property string downloadingId: ""
-    property int tabIndex: 0
+    property int tabIndex: 1
     property var localResults: []
     property int localPage: 1
     readonly property int localPageSize: 24
@@ -170,9 +170,10 @@ Item {
     }
 
     Component.onCompleted: {
-        if (Wallpaper.currentResults.length === 0)
+        if (browseView.tabIndex === 0 && Wallpaper.currentResults.length === 0)
             Wallpaper.search("", 1)
-        browseView.updateLocalFilter(true)
+        else if (browseView.tabIndex === 1)
+            browseView.updateLocalFilter(true)
     }
 
     Connections {

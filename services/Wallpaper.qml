@@ -297,9 +297,9 @@ Singleton {
                     const localFilename = "wallhaven_" + wallpaperId + "." + ext
                     const localPath = wallsDir + "/" + localFilename
                     const saveCmd = "mkdir -p '" + wallsDir + "' && cp '" + tmpPath + "' '" + localPath + "'"
-                    Quickshell.execDetached(["sh", "-c", saveCmd])
-                    // Atualiza a lista local após salvar
-                    root.scanLocal()
+                    // Usa Process síncrono para garantir que o arquivo seja copiado antes do scanLocal
+                    const saveProc = Qt.createQmlObject('import QtQuick; Process { command: ["sh", "-c", "' + saveCmd.replace(/"/g, '\\"') + '"]; running: true; onExited: (code) => { if (code === 0) root.scanLocal(); destroy(); } }', root)
+                    saveProc.running = true
 
                     if (width > 0 && height > 0)
                         root.applyWithResize(tmpPath, width, height, fillMode)
