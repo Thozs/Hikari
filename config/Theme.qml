@@ -114,10 +114,10 @@ Singleton {
         console.log("[Theme] _runMatugen chamado, path:", root._wallpaperPath, "isDark:", root.isDark)
         matugenProc.running = false
         matugenProc.command = [
-            "matugen", "image", root._wallpaperPath,
+            "matugen", "image",
             "--json", "hex",
-            "-m", root.isDark ? "dark" : "light",
-            "--scheme", "tonal-spot"
+            "--mode", root.isDark ? "dark" : "light",
+            root._wallpaperPath
         ]
         matugenProc.running = true
     }
