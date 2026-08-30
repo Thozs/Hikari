@@ -143,18 +143,22 @@ Singleton {
                     // Debug: log todas as cores que o matugen retornou
                     console.log("[Theme] matugen colors:", JSON.stringify(colors))
 
-                    root._mBackground = colors.background
-                    root._mSurfaceLow = colors.surface_dim
-                    root._mSurface = colors.surface
-                    root._mSurfaceHigh = colors.surface_container_high
-                    root._mSurfaceHighest = colors.surface_container_highest
-                    root._mText = colors.on_background
-                    root._mTextMuted = colors.outline
-                    root._mOutline = colors.outline_variant
-                    root._mOutlineVariant = colors.surface_variant
-                    root._mAccent = colors.primary
-                    root._mAccentText = colors.on_primary
-                    root._mDanger = colors.error
+                    // matugen retorna {dark: {color: "#..."}, default: {...}, light: {...}}
+                    // Usamos .dark.color pois passamos --mode dark
+                    function mc(key) { return colors[key]?.dark?.color || colors[key]?.default?.color || "#000000" }
+
+                    root._mBackground = mc("background")
+                    root._mSurfaceLow = mc("surface_dim")
+                    root._mSurface = mc("surface")
+                    root._mSurfaceHigh = mc("surface_container_high")
+                    root._mSurfaceHighest = mc("surface_container_highest")
+                    root._mText = mc("on_background")
+                    root._mTextMuted = mc("outline")
+                    root._mOutline = mc("outline_variant")
+                    root._mOutlineVariant = mc("surface_variant")
+                    root._mAccent = mc("primary")
+                    root._mAccentText = mc("on_primary")
+                    root._mDanger = mc("error")
 
                     root._matugenLoaded = true
                     console.log("[Theme] matugen carregado com sucesso (" + (root.isDark ? "dark" : "light") + ")")
