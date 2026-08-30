@@ -65,6 +65,16 @@ Scope {
                 bottom: Settings.barPosition === "bottom" ? Settings.barMargin : (root.vertical ? panel.lengthInset : 0)
             }
 
+            // Pílula principal da barra (fundo)
+            Rectangle {
+                id: pill
+                anchors.fill: parent
+                radius: panel.pillRadius
+                color: Theme.barBackground
+                border.color: Theme.barOutlineVariant
+                border.width: 1
+            }
+
             // ============================================================
             // LAYOUT VERTICAL (barra na esquerda/direita)
             // ============================================================
@@ -74,35 +84,42 @@ Scope {
                 visible: root.vertical
 
                 // Grupo do topo: LauncherButton + Workspaces
-                // Preenche do topo (com inset) até o centro
-                Rectangle {
-                    id: topGroupBg
+                Column {
                     anchors {
                         top: parent.top
                         topMargin: panel.lengthInset
                         horizontalCenter: parent.horizontalCenter
-                        bottom: parent.verticalCenter
                     }
-                    width: Math.max(
-                        Math.round(panel.thickness * 0.6) + 16,
-                        Math.round(panel.thickness * 0.55) * 5 + 8 * 4 + 24
-                    )
-                    radius: panel.pillRadius
-                    color: Theme.moduleBackground
-                    border.color: Theme.moduleBorder
-                    border.width: 1
+                    spacing: 10
 
-                    Column {
-                        anchors.centerIn: parent
-                        spacing: 6
+                    // Launcher Button com fundo pílula
+                    Rectangle {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        width: Math.round(panel.thickness * 0.6) + 12
+                        height: Math.round(panel.thickness * 0.6) + 12
+                        radius: width / 2
+                        color: Theme.moduleBackground
+                        border.color: Theme.moduleBorder
+                        border.width: 1
 
                         LauncherButton {
-                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.centerIn: parent
                             thickness: panel.thickness
                         }
+                    }
+
+                    // Workspaces com fundo pílula
+                    Rectangle {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        width: Math.round(panel.thickness * 0.55) * 5 + 8 * 4 + 16
+                        height: Math.round(panel.thickness * 0.55) + 12
+                        radius: height / 2
+                        color: Theme.moduleBackground
+                        border.color: Theme.moduleBorder
+                        border.width: 1
 
                         Workspaces {
-                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.centerIn: parent
                             vertical: true
                             cellSize: Math.round(panel.thickness * 0.55)
                         }
@@ -110,30 +127,26 @@ Scope {
                 }
 
                 // Grupo de baixo: AudioIndicator + Relógio
-                // Preenche do centro até a base (com inset)
-                Rectangle {
-                    id: bottomGroupBg
+                Column {
                     anchors {
-                        top: parent.verticalCenter
                         bottom: parent.bottom
                         bottomMargin: panel.lengthInset
                         horizontalCenter: parent.horizontalCenter
                     }
-                    width: Math.max(
-                        Math.round(panel.thickness * 0.6) + 16,
-                        Math.round(panel.thickness * 0.40) * 2 + 20
-                    )
-                    radius: panel.pillRadius
-                    color: Theme.moduleBackground
-                    border.color: Theme.moduleBorder
-                    border.width: 1
+                    spacing: 10
 
-                    Column {
-                        anchors.centerIn: parent
-                        spacing: 6
+                    // AudioIndicator com fundo pílula
+                    Rectangle {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        width: Math.round(panel.thickness * 0.6) + 12
+                        height: Math.round(panel.thickness * 0.6) + 12
+                        radius: width / 2
+                        color: Theme.moduleBackground
+                        border.color: Theme.moduleBorder
+                        border.width: 1
 
                         AudioIndicator {
-                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.centerIn: parent
                             thickness: panel.thickness
                             vertical: true
                             screenRef: panel.screen
@@ -141,9 +154,20 @@ Scope {
                             barMargin: Settings.barMargin
                             edgeInset: panel.lengthInset
                         }
+                    }
+
+                    // Relógio com fundo pílula
+                    Rectangle {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        width: Math.round(panel.thickness * 0.40) * 2 + 20
+                        height: Math.round(panel.thickness * 0.34) * 2 + 2 + 12
+                        radius: height / 2
+                        color: Theme.moduleBackground
+                        border.color: Theme.moduleBorder
+                        border.width: 1
 
                         Column {
-                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.centerIn: parent
                             spacing: 2
                             Text {
                                 anchors.horizontalCenter: parent.horizontalCenter
@@ -171,34 +195,40 @@ Scope {
                 visible: !root.vertical
 
                 // Grupo da esquerda: LauncherButton + Workspaces
-                Rectangle {
-                    id: leftGroupBg
+                Row {
                     anchors {
                         left: parent.left
                         leftMargin: panel.lengthInset
                         verticalCenter: parent.verticalCenter
-                        right: parent.horizontalCenter
                     }
-                    height: Math.max(
-                        Math.round(panel.thickness * 0.6) + 16,
-                        Math.round(panel.thickness * 0.55) + 16
-                    )
-                    radius: panel.pillRadius
-                    color: Theme.moduleBackground
-                    border.color: Theme.moduleBorder
-                    border.width: 1
+                    spacing: 8
 
-                    Row {
-                        anchors.centerIn: parent
-                        spacing: 6
+                    // Launcher Button com fundo pílula
+                    Rectangle {
+                        width: Math.round(panel.thickness * 0.6) + 12
+                        height: Math.round(panel.thickness * 0.6) + 12
+                        radius: width / 2
+                        color: Theme.moduleBackground
+                        border.color: Theme.moduleBorder
+                        border.width: 1
 
                         LauncherButton {
-                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.centerIn: parent
                             thickness: panel.thickness
                         }
+                    }
+
+                    // Workspaces com fundo pílula
+                    Rectangle {
+                        width: Math.round(panel.thickness * 0.55) * 5 + 8 * 4 + 16
+                        height: Math.round(panel.thickness * 0.55) + 12
+                        radius: height / 2
+                        color: Theme.moduleBackground
+                        border.color: Theme.moduleBorder
+                        border.width: 1
 
                         Workspaces {
-                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.centerIn: parent
                             vertical: false
                             cellSize: Math.round(panel.thickness * 0.55)
                         }
@@ -206,29 +236,25 @@ Scope {
                 }
 
                 // Grupo da direita: AudioIndicator + Relógio
-                Rectangle {
-                    id: rightGroupBg
+                Row {
                     anchors {
                         right: parent.right
                         rightMargin: panel.lengthInset
                         verticalCenter: parent.verticalCenter
-                        left: parent.horizontalCenter
                     }
-                    height: Math.max(
-                        Math.round(panel.thickness * 0.6) + 16,
-                        Math.round(panel.thickness * 0.40) + 16
-                    )
-                    radius: panel.pillRadius
-                    color: Theme.moduleBackground
-                    border.color: Theme.moduleBorder
-                    border.width: 1
+                    spacing: 8
 
-                    Row {
-                        anchors.centerIn: parent
-                        spacing: 6
+                    // AudioIndicator com fundo pílula
+                    Rectangle {
+                        width: Math.round(panel.thickness * 0.6) + 12
+                        height: Math.round(panel.thickness * 0.6) + 12
+                        radius: width / 2
+                        color: Theme.moduleBackground
+                        border.color: Theme.moduleBorder
+                        border.width: 1
 
                         AudioIndicator {
-                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.centerIn: parent
                             thickness: panel.thickness
                             vertical: false
                             screenRef: panel.screen
@@ -236,9 +262,19 @@ Scope {
                             barMargin: Settings.barMargin
                             edgeInset: panel.lengthInset
                         }
+                    }
+
+                    // Relógio com fundo pílula
+                    Rectangle {
+                        width: Math.round(panel.thickness * 0.40) * 2 + 20
+                        height: Math.round(panel.thickness * 0.40) + 12
+                        radius: height / 2
+                        color: Theme.moduleBackground
+                        border.color: Theme.moduleBorder
+                        border.width: 1
 
                         Text {
-                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.centerIn: parent
                             text: root.hours + ":" + root.minutes
                             color: Theme.barText
                             font.pixelSize: Math.round(panel.thickness * 0.40)
