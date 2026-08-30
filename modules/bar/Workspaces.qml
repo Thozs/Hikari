@@ -55,8 +55,9 @@ Item {
             width: root.cellSize
             height: root.cellSize
             radius: Math.round(root.cellSize * 0.32)
+            // Sem borda - o fundo da pílula do grupo já dá o contorno
             color: wsRect.active
-                ? Theme.barText
+                ? Theme.barAccent
                 : (wsRect.hasToplevel
                     ? Qt.rgba(Theme.barText.r, Theme.barText.g, Theme.barText.b, 0.16)
                     : "transparent")
@@ -75,7 +76,7 @@ Item {
                 anchors.centerIn: parent
                 visible: wsRect.desktopEntry === null
                 text: wsId
-                color: wsRect.active ? Theme.barBackground : Theme.barText
+                color: wsRect.active ? Theme.barAccentText : Theme.barText
                 opacity: wsRect.active ? 1 : (wsRect.hasToplevel ? 0.85 : 0.35)
                 font.pixelSize: root.fontSize
             }
