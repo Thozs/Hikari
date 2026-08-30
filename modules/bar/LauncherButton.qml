@@ -1,0 +1,41 @@
+import QtQuick
+import Quickshell
+import "../../config"
+
+Item {
+    id: root
+    required property int thickness
+
+    readonly property int iconSize: Math.round(thickness * 0.55)
+    readonly property var iconCandidates: ["archlinux-logo", "archlinux", "distributor-logo-archlinux", "start-here-arch"]
+    readonly property string iconSrc: {
+        for (const name of iconCandidates) {
+            const p = Quickshell.iconPath(name, true)
+            if (p !== "") return p
+        }
+        return ""
+    }
+
+    implicitWidth: Math.round(thickness * 0.6)
+    implicitHeight: Math.round(thickness * 0.6)
+
+    Image {
+        anchors.centerIn: parent
+        width: root.iconSize
+        height: root.iconSize
+        visible: root.iconSrc !== ""
+        source: root.iconSrc
+    }
+
+    Text {
+        anchors.centerIn: parent
+        visible: root.iconSrc === ""
+        text: "🐧"
+        color: Theme.text
+        font.pixelSize: Math.round(root.thickness * 0.34)
+    }
+
+    TapHandler {
+        onTapped: Quickshell.execDetached(["quickshell", "ipc", "-c", "arnyx-qs", "call", "launcher", "toggle"])
+    }
+}
