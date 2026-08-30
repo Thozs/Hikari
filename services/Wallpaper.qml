@@ -240,18 +240,12 @@ Singleton {
         const filename = "wallhaven_" + wallpaper.id + "." + ext
         const outPath = wallsDir + "/" + filename
 
-        // Verifica se arquivo já existe no disco (mais confiável que localList)
-        const checkCmd = "test -f '" + outPath.replace(/'/g, "'\\''") + "'"
-        const checkProc = Qt.createQmlObject('import QtQuick; QtObject { function run() { var p = new Process(); p.command = ["sh", "-c", "' + checkCmd + '"]; p.running = true; p.onExited = (code) => { if (code === 0) { originalReady("' + wallpaper.id + '", "' + filename + '"); } else { download(); } }; } }', root)
-        checkProc.run()
-
-        function download() {
-            const cmd = "mkdir -p '" + wallsDir + "' && curl -L -s -o '" + outPath + "' '" + url + "'"
-            const proc = downloadOriginalComp.createObject(root, {
-                command: ["sh", "-c", cmd], filename: filename, wallpaperId: wallpaper.id
-            })
-            proc.running = true
-        }
+        // Sempre baixa (sobrescreve se já existe) - mais simples e confiável
+        const cmd = "mkdir -p '" + wallsDir + "' && curl -L -s -o '" + outPath + "' '" + url + "'"
+        const proc = downloadOriginalComp.createObject(root, {
+            command: ["sh", "-c", cmd], filename: filename, wallpaperId: wallpaper.id
+        })
+        proc.running = true
     }
 
     Component {
