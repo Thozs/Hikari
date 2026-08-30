@@ -106,7 +106,7 @@ Singleton {
     property color _mAccentText
     property color _mDanger
 
-    on_wallpaperPathChanged: root._runMatugen()
+    on_WallpaperPathChanged: root._runMatugen()
     onIsDarkChanged: root._runMatugen()
 
     function _runMatugen() {
