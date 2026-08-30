@@ -73,14 +73,6 @@ Scope {
                 anchors.fill: parent
                 visible: root.vertical
 
-            // ============================================================
-            // LAYOUT VERTICAL (barra na esquerda/direita)
-            // ============================================================
-            Item {
-                id: verticalLayout
-                anchors.fill: parent
-                visible: root.vertical
-
                 // Grupo do topo: LauncherButton + Workspaces
                 // Preenche do topo (com inset) até o centro
                 Rectangle {
