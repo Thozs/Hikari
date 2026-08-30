@@ -107,8 +107,8 @@ Scope {
                 radius: 12
                 bottomLeftRadius: 0
                 bottomRightRadius: 0
-                color: Theme.background
-                border.color: Theme.surface
+                color: Theme.barBackground
+                border.color: Theme.barOutlineVariant
                 border.width: 1
 
                 Column {
