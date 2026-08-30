@@ -33,7 +33,7 @@ Item {
     Text {
         id: icon
         anchors.centerIn: parent
-        text: Audio.muted ? "🔇" : "🔊"
+        text: (Audio.muted === true) ? "🔇" : "🔊"
         color: Theme.barText
         font.pixelSize: Math.round(root.thickness * 0.30)
     }
@@ -51,7 +51,11 @@ Item {
     }
 
     TapHandler {
-        onTapped: Audio.toggleMute()
+        onTapped: {
+            if (typeof Audio.toggleMute === "function") {
+                Audio.toggleMute()
+            }
+        }
     }
 
     PanelWindow {
@@ -83,6 +87,8 @@ Item {
             anchors.fill: parent
             radius: 12
             color: Theme.barBackground
+            border.color: Theme.barOutlineVariant
+            border.width: 1
         }
 
         HoverHandler {
@@ -113,7 +119,7 @@ Item {
                 }
                 Item { Layout.fillWidth: true }
                 Text {
-                    text: Audio.muted ? "Mudo" : Math.round(Audio.volume * 100) + "%"
+                    text: (Audio.muted === true) ? "Mudo" : (typeof Audio.volume === "number" ? Math.round(Audio.volume * 100) + "%" : "—")
                     color: Theme.barText
                     font.pixelSize: 13
                 }
@@ -123,7 +129,7 @@ Item {
                 Layout.fillWidth: true
                 implicitHeight: 30
                 radius: 6
-                color: Qt.lighter(Theme.barBackground, 1.4)
+                color: Theme.barSurface
 
                 RowLayout {
                     anchors.fill: parent
@@ -134,7 +140,7 @@ Item {
                     Text {
                         Layout.fillWidth: true
                         elide: Text.ElideRight
-                        text: Audio.sink?.description || Audio.sink?.name || "Nenhum"
+                        text: (Audio.sink?.description || Audio.sink?.name || "Nenhum")
                         color: Theme.barText
                         font.pixelSize: 12
                     }
@@ -154,7 +160,7 @@ Item {
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.leftMargin: 10
-                visible: root.sinksExpanded
+                visible: root.sinksExpanded && Audio.sinks && Audio.sinks.length > 0
                 spacing: 4
 
                 Repeater {
@@ -183,7 +189,9 @@ Item {
 
                         TapHandler {
                             onTapped: {
-                                Audio.setAudioSink(sinkRow.modelData);
+                                if (typeof Audio.setAudioSink === "function") {
+                                    Audio.setAudioSink(sinkRow.modelData);
+                                }
                                 root.sinksExpanded = false;
                             }
                         }
@@ -195,9 +203,13 @@ Item {
                 id: volumeSlider
                 Layout.fillWidth: true
                 from: 0
-                to: Audio.maxVolume
-                value: Audio.volume
-                onMoved: Audio.setVolume(value)
+                to: (typeof Audio.maxVolume === "number" ? Audio.maxVolume : 1.0)
+                value: (typeof Audio.volume === "number" ? Audio.volume : 0)
+                onMoved: {
+                    if (typeof Audio.setVolume === "function") {
+                        Audio.setVolume(value)
+                    }
+                }
             }
 
             RowLayout {
@@ -211,7 +223,7 @@ Item {
                 }
                 Item { Layout.fillWidth: true }
                 Text {
-                    text: Audio.sourceMuted ? "Mudo" : Math.round(Audio.sourceVolume * 100) + "%"
+                    text: (Audio.sourceMuted === true) ? "Mudo" : (typeof Audio.sourceVolume === "number" ? Math.round(Audio.sourceVolume * 100) + "%" : "—")
                     color: Theme.barText
                     font.pixelSize: 13
                 }
@@ -221,7 +233,7 @@ Item {
                 Layout.fillWidth: true
                 implicitHeight: 30
                 radius: 6
-                color: Qt.lighter(Theme.barBackground, 1.4)
+                color: Theme.barSurface
 
                 RowLayout {
                     anchors.fill: parent
@@ -232,7 +244,7 @@ Item {
                     Text {
                         Layout.fillWidth: true
                         elide: Text.ElideRight
-                        text: Audio.source?.description || Audio.source?.name || "Nenhum"
+                        text: (Audio.source?.description || Audio.source?.name || "Nenhum")
                         color: Theme.barText
                         font.pixelSize: 12
                     }
@@ -252,7 +264,7 @@ Item {
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.leftMargin: 10
-                visible: root.sourcesExpanded
+                visible: root.sourcesExpanded && Audio.sources && Audio.sources.length > 0
                 spacing: 4
 
                 Repeater {
@@ -281,7 +293,9 @@ Item {
 
                         TapHandler {
                             onTapped: {
-                                Audio.setAudioSource(sourceRow.modelData);
+                                if (typeof Audio.setAudioSource === "function") {
+                                    Audio.setAudioSource(sourceRow.modelData);
+                                }
                                 root.sourcesExpanded = false;
                             }
                         }
@@ -293,9 +307,13 @@ Item {
                 id: micSlider
                 Layout.fillWidth: true
                 from: 0
-                to: Audio.maxVolume
-                value: Audio.sourceVolume
-                onMoved: Audio.setSourceVolume(value)
+                to: (typeof Audio.maxVolume === "number" ? Audio.maxVolume : 1.0)
+                value: (typeof Audio.sourceVolume === "number" ? Audio.sourceVolume : 0)
+                onMoved: {
+                    if (typeof Audio.setSourceVolume === "function") {
+                        Audio.setSourceVolume(value)
+                    }
+                }
             }
         }
     }
