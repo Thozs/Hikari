@@ -111,10 +111,15 @@ Item {
 
     function updateLocalFilter(resetPage) {
         const q = searchField.text.trim().toLowerCase()
+        let list = Wallpaper.localList
+        // Ordenar por data de modificação decrescente (mais recente primeiro)
+        list = [...list].sort(function(a, b) {
+            return (b.modified || 0) - (a.modified || 0)
+        })
         if (q.length === 0) {
-            browseView.localResults = Wallpaper.localList
+            browseView.localResults = list
         } else {
-            browseView.localResults = Wallpaper.localList.filter(function (w) {
+            browseView.localResults = list.filter(function (w) {
                 return w.name.toLowerCase().indexOf(q) !== -1
             })
         }
@@ -181,6 +186,10 @@ Item {
                 Qt.callLater(function () {
                     localGrid.contentX = browseView._savedLocalScrollY
                 })
+            }
+            // Se estiver na aba Wallhaven e baixou um wallpaper, volta para a primeira página da Minha Pasta
+            if (browseView.tabIndex === 0) {
+                browseView.updateLocalFilter(true)
             }
         }
         function onOriginalReady(wallpaperId, filename) {

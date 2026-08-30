@@ -29,9 +29,6 @@ Item {
     implicitWidth: Math.round(thickness * 0.6)
     implicitHeight: Math.round(thickness * 0.6)
 
-    // Cursor de ponteiro (mão) para indicar que é clicável
-    cursorShape: Qt.PointingHandCursor
-
     Image {
         id: archIcon
         anchors.centerIn: parent
@@ -50,8 +47,11 @@ Item {
         font.pixelSize: Math.round(root.thickness * 0.34)
     }
 
-    TapHandler {
-        onTapped: {
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
+        onClicked: {
             console.log("[LauncherButton] Toggle launcher via IPC")
             Quickshell.execDetached(["quickshell", "ipc", "-c", "arnyx-qs", "call", "launcher", "toggle"])
         }
