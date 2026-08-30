@@ -85,7 +85,9 @@ Singleton {
         if (!colors || colors.length === 0) return true
         let sum = 0
         for (const c of colors) sum += root._relativeLuminance(c)
-        return (sum / colors.length) < 0.5
+        const avg = sum / colors.length
+        console.log("[Theme] _computeIsDark: colors.length=" + colors.length + " avgLuminance=" + avg + " isDark=" + (avg < 0.5))
+        return avg < 0.5
     }
 
     // =========================================================================
@@ -132,11 +134,14 @@ Singleton {
                 if (!matugenOut.data) return
                 const outText = String(matugenOut.data)
                 if (outText.trim() === "" || outText === "undefined") return
-                
+                    
                 try {
                     const parsed = JSON.parse(outText)
                     const colors = parsed.colors
                     if (!colors) return
+
+                    // Debug: log todas as cores que o matugen retornou
+                    console.log("[Theme] matugen colors:", JSON.stringify(colors))
 
                     root._mBackground = colors.background
                     root._mSurfaceLow = colors.surface_dim
@@ -153,6 +158,7 @@ Singleton {
 
                     root._matugenLoaded = true
                     console.log("[Theme] matugen carregado com sucesso (" + (root.isDark ? "dark" : "light") + ")")
+                    console.log("[Theme] background:", root._mBackground, "accent:", root._mAccent, "text:", root._mText)
                 } catch (e) {
                     console.log("[Theme] Erro ao parsear JSON do matugen:", e)
                 }
