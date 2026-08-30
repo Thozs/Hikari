@@ -69,12 +69,12 @@ Singleton {
     readonly property color wallpaperAccent: root.accent
 
     // ColorQuantizer mantido apenas para decidir isDark (modo do matugen)
-    // depth: 5 = 32 cores (melhor amostragem para detectar claro/escuro)
+    // depth: 3 = 8 cores (rápido, matugen faz o trabalho pesado de cor)
     ColorQuantizer {
         id: wallpaperQuantizer
         source: (root.dynamicColorEnabled && root._wallpaperPath !== "") ? Qt.resolvedUrl(root._wallpaperPath) : ""
         rescaleSize: 64
-        depth: 5
+        depth: 3
     }
 
     function _relativeLuminance(c) {
@@ -109,11 +109,20 @@ Singleton {
     property color _mAccentText
     property color _mDanger
 
+    // Cache simples: evita rodar matugen de novo pro mesmo wallpaper+mode
+    property string _lastMatugenPath: ""
+    property bool _lastMatugenIsDark: false
+
     on_WallpaperPathChanged: root._runMatugen()
     onIsDarkChanged: root._runMatugen()
 
     function _runMatugen() {
         if (!root.dynamicColorEnabled || root._wallpaperPath === "") return
+        // Cache: se path e mode não mudaram, não roda de novo
+        if (root._lastMatugenPath === root._wallpaperPath && root._lastMatugenIsDark === root.isDark) {
+            console.log("[Theme] matugen cache hit, pulando")
+            return
+        }
         console.log("[Theme] _runMatugen chamado, path:", root._wallpaperPath, "isDark:", root.isDark)
         matugenProc.running = false
         matugenProc.command = [
@@ -145,8 +154,14 @@ Singleton {
                     console.log("[Theme] matugen colors:", JSON.stringify(colors))
 
                     // matugen retorna {dark: {color: "#..."}, default: {...}, light: {...}}
-                    // Usamos .dark.color pois passamos --mode dark
-                    function mc(key) { return colors[key]?.dark?.color || colors[key]?.default?.color || "#000000" }
+                    // Usa o modo correspondente ao --mode passado (dark ou light)
+                    const mode = root.isDark ? "dark" : "light"
+                    console.log("[Theme] mc() mode:", mode, "isDark:", root.isDark)
+                    function mc(key) {
+                        const val = colors[key]?.[mode]?.color || colors[key]?.default?.color || "#000000"
+                        console.log("[Theme] mc(" + key + ") -> " + val + " (mode=" + mode + ")")
+                        return val
+                    }
 
                     root._mBackground = mc("background")
                     root._mSurfaceLow = mc("surface_dim")
@@ -161,8 +176,12 @@ Singleton {
                     root._mAccentText = mc("on_primary")
                     root._mDanger = mc("error")
 
+                    // Atualiza cache
+                    root._lastMatugenPath = root._wallpaperPath
+                    root._lastMatugenIsDark = root.isDark
+
                     root._matugenLoaded = true
-                    console.log("[Theme] matugen carregado com sucesso (" + (root.isDark ? "dark" : "light") + ")")
+                    console.log("[Theme] matugen carregado com sucesso (" + mode + ")")
                     console.log("[Theme] background:", root._mBackground, "accent:", root._mAccent, "text:", root._mText)
                 } catch (e) {
                     console.log("[Theme] Erro ao parsear JSON do matugen:", e)

@@ -8,7 +8,7 @@ import "../../../services"
 Item {
     id: overlay
 
-    readonly property var c: ConfigModule.Palette
+    readonly property var c: ConfigModule.Theme
     readonly property string fontDisplay: "Noto Serif"
     readonly property string fontBody: "Noto Sans"
 
