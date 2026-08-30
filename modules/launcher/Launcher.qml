@@ -66,7 +66,7 @@ Scope {
 
             property int itemHeight: 64
             property int visibleItems: 5
-            property int searchHeight: 28
+            property int searchHeight: 36
             property int panelMargins: 12
             property int panelSpacing: 8
 
@@ -91,7 +91,10 @@ Scope {
                 NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
             }
 
-            Component.onCompleted: margins.bottom = win.openMargin
+            Component.onCompleted: {
+                margins.bottom = win.openMargin
+                search.forceActiveFocus()
+            }
 
             function activate(index) {
                 const item = root.filteredEntries(search.text)[index]
@@ -143,85 +146,79 @@ Scope {
                     spacing: win.panelSpacing
 
                     // Área da lista de resultados
-                    Rectangle {
-                        id: listContainer
+                    ListView {
+                        id: resultsList
                         width: parent.width
                         height: win.itemHeight * win.visibleItems
-                        radius: 8
-                        color: Theme.launcherSurface
-                        border.color: Theme.launcherListBorder
-                        border.width: 1
                         clip: true
+                        currentIndex: 0
+                        focus: true
 
-                        ListView {
-                            id: resultsList
-                            anchors.fill: parent
-                            clip: true
-                            currentIndex: 0
-                            focus: true
+                        model: ScriptModel {
+                            values: root.filteredEntries(search.text)
+                        }
 
-                            model: ScriptModel {
-                                values: root.filteredEntries(search.text)
-                            }
+                        delegate: Rectangle {
+                            required property var modelData
+                            required property int index
+                            width: resultsList.width
+                            height: win.itemHeight
+                            radius: 6
+                            color: index === resultsList.currentIndex ? Theme.launcherSelectedBg : "transparent"
+                            border.color: Theme.launcherItemBorder
+                            border.width: 1
 
-                            delegate: Rectangle {
-                                required property var modelData
-                                required property int index
-                                width: resultsList.width
-                                height: win.itemHeight
-                                color: index === resultsList.currentIndex ? Theme.launcherSelectedBg : "transparent"
-                                radius: 4
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.left: parent.left
+                                anchors.leftMargin: 14
+                                anchors.right: parent.right
+                                anchors.rightMargin: 14
+                                spacing: 12
 
-                                Row {
+                                Image {
+                                    width: 34
+                                    height: 34
                                     anchors.verticalCenter: parent.verticalCenter
-                                    anchors.left: parent.left
-                                    anchors.leftMargin: 14
-                                    spacing: 12
-
-                                    Image {
-                                        width: 34
-                                        height: 34
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        visible: modelData.kind === "app" && !!modelData.entry.icon
-                                        source: (modelData.kind === "app" && modelData.entry.icon)
-                                            ? Quickshell.iconPath(modelData.entry.icon, "")
-                                            : ""
-                                    }
-
-                                    Text {
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        text: modelData.label
-                                        color: Theme.launcherText
-                                        font.pixelSize: 19
-                                        elide: Text.ElideRight
-                                        width: parent.width - 60
-                                    }
+                                    visible: modelData.kind === "app" && !!modelData.entry.icon
+                                    source: (modelData.kind === "app" && modelData.entry.icon)
+                                        ? Quickshell.iconPath(modelData.entry.icon, "")
+                                        : ""
                                 }
 
-                                MouseArea {
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                    onEntered: resultsList.currentIndex = index
-                                    onClicked: win.activate(index)
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: modelData.label
+                                    color: Theme.launcherText
+                                    font.pixelSize: 19
+                                    elide: Text.ElideRight
+                                    width: parent.width - 60
                                 }
                             }
 
-                            // Navegação por teclado direta na lista
-                            Keys.onPressed: (event) => {
-                                if (event.key === Qt.Key_Down) {
-                                    resultsList.currentIndex = Math.min(resultsList.currentIndex + 1, resultsList.count - 1)
-                                    event.accepted = true
-                                } else if (event.key === Qt.Key_Up) {
-                                    resultsList.currentIndex = Math.max(resultsList.currentIndex - 1, 0)
-                                    event.accepted = true
-                                } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                                    win.activate(resultsList.currentIndex)
-                                    event.accepted = true
-                                } else if (event.key === Qt.Key_Escape) {
-                                    root.open = false
-                                    search.text = ""
-                                    event.accepted = true
-                                }
+                            MouseArea {
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onEntered: resultsList.currentIndex = index
+                                onClicked: win.activate(index)
+                            }
+                        }
+
+                        // Navegação por teclado direta na lista
+                        Keys.onPressed: (event) => {
+                            if (event.key === Qt.Key_Down) {
+                                resultsList.currentIndex = Math.min(resultsList.currentIndex + 1, resultsList.count - 1)
+                                event.accepted = true
+                            } else if (event.key === Qt.Key_Up) {
+                                resultsList.currentIndex = Math.max(resultsList.currentIndex - 1, 0)
+                                event.accepted = true
+                            } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                                win.activate(resultsList.currentIndex)
+                                event.accepted = true
+                            } else if (event.key === Qt.Key_Escape) {
+                                root.open = false
+                                search.text = ""
+                                event.accepted = true
                             }
                         }
                     }
@@ -239,15 +236,15 @@ Scope {
                         id: searchContainer
                         width: parent.width
                         height: win.searchHeight
-                        radius: 6
+                        radius: 8
                         color: Theme.launcherSearchBackground
                         border.color: Theme.launcherSearchBorder
-                        border.width: 1.5
+                        border.width: 2
 
                         TextInput {
                             id: search
                             anchors.fill: parent
-                            anchors.margins: 10
+                            anchors.margins: 12
                             color: Theme.launcherText
                             font.pixelSize: 16
                             focus: true

@@ -89,6 +89,9 @@ Singleton {
     readonly property color launcherSelectedBg: (root.barUseMatugen && root._matugenLoaded)
         ? root._computeLauncherSelectedBg(root._mSurfaceHigh, root._mAccent, root.isDark)
         : root._fixedSurfaceHigh
+    readonly property color launcherItemBorder: (root.barUseMatugen && root._matugenLoaded)
+        ? root._computeLauncherItemBorder(root._mOutline, root._mAccent, root.isDark)
+        : root._fixedOutline
 
     // =========================================================================
     // ISDARK & DEBUG
