@@ -66,7 +66,7 @@ Scope {
 
             property int itemHeight: 64
             property int visibleItems: 5
-            property int searchHeight: 36
+            property int searchHeight: 42
             property int panelMargins: 12
             property int panelSpacing: 8
 
