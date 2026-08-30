@@ -84,15 +84,15 @@ Scope {
                 radius: panel.pillRadius
                 color: Theme.barBackground
 
-                // Grupo do topo: icone do launcher colado nos workspaces
+                // Grupo do topo: LauncherButton + Workspaces em uma única pílula de fundo
                 Loader {
                     anchors {
                         top: root.vertical ? parent.top : undefined
                         left: root.vertical ? undefined : parent.left
                         horizontalCenter: root.vertical ? parent.horizontalCenter : undefined
                         verticalCenter: root.vertical ? undefined : parent.verticalCenter
-                        topMargin: root.vertical ? 14 : 0
-                        leftMargin: root.vertical ? 0 : 14
+                        topMargin: root.vertical ? 10 : 0
+                        leftMargin: root.vertical ? 0 : 10
                     }
                     sourceComponent: root.vertical ? topStackVertical : topStackHorizontal
                 }
@@ -100,38 +100,35 @@ Scope {
                 Component {
                     id: topStackVertical
                     Column {
-                        spacing: 8
+                        spacing: 6
 
-                        // Launcher Button com fundo
+                        // Fundo único em pílula para LauncherButton + Workspaces
                         Rectangle {
                             anchors.horizontalCenter: parent.horizontalCenter
-                            width: Math.round(panel.thickness * 0.6) + 8
-                            height: Math.round(panel.thickness * 0.6) + 8
-                            radius: Math.round((Math.round(panel.thickness * 0.6) + 8) / 2)
+                            width: Math.max(
+                                Math.round(panel.thickness * 0.6) + 16,
+                                Math.round(panel.thickness * 0.55) * 5 + 8 * 4 + 24
+                            )
+                            height: (Math.round(panel.thickness * 0.6) + 16) + 6 + (Math.round(panel.thickness * 0.55) + 16)
+                            radius: panel.pillRadius
                             color: Theme.moduleBackground
                             border.color: Theme.moduleBorder
                             border.width: 1
 
-                            LauncherButton {
+                            Column {
                                 anchors.centerIn: parent
-                                thickness: panel.thickness
-                            }
-                        }
+                                spacing: 6
 
-                        // Workspaces com fundo
-                        Rectangle {
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            width: Math.round(panel.thickness * 0.55) * 5 + 8 * 4 + 16
-                            height: Math.round(panel.thickness * 0.55) + 16
-                            radius: Math.round(panel.thickness * 0.55) / 2 + 8
-                            color: Theme.moduleBackground
-                            border.color: Theme.moduleBorder
-                            border.width: 1
+                                LauncherButton {
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    thickness: panel.thickness
+                                }
 
-                            Workspaces {
-                                anchors.centerIn: parent
-                                vertical: true
-                                cellSize: Math.round(panel.thickness * 0.55)
+                                Workspaces {
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    vertical: true
+                                    cellSize: Math.round(panel.thickness * 0.55)
+                                }
                             }
                         }
                     }
@@ -140,50 +137,48 @@ Scope {
                 Component {
                     id: topStackHorizontal
                     Row {
-                        spacing: 8
+                        spacing: 6
 
-                        // Launcher Button com fundo
+                        // Fundo único em pílula para LauncherButton + Workspaces
                         Rectangle {
-                            width: Math.round(panel.thickness * 0.6) + 8
-                            height: Math.round(panel.thickness * 0.6) + 8
-                            radius: Math.round((Math.round(panel.thickness * 0.6) + 8) / 2)
+                            width: (Math.round(panel.thickness * 0.6) + 16) + 6 + (Math.round(panel.thickness * 0.55) * 5 + 8 * 4 + 24)
+                            height: Math.max(
+                                Math.round(panel.thickness * 0.6) + 16,
+                                Math.round(panel.thickness * 0.55) + 16
+                            )
+                            radius: panel.pillRadius
                             color: Theme.moduleBackground
                             border.color: Theme.moduleBorder
                             border.width: 1
 
-                            LauncherButton {
+                            Row {
                                 anchors.centerIn: parent
-                                thickness: panel.thickness
-                            }
-                        }
+                                spacing: 6
 
-                        // Workspaces com fundo
-                        Rectangle {
-                            width: Math.round(panel.thickness * 0.55) * 5 + 8 * 4 + 16
-                            height: Math.round(panel.thickness * 0.55) + 16
-                            radius: Math.round(panel.thickness * 0.55) / 2 + 8
-                            color: Theme.moduleBackground
-                            border.color: Theme.moduleBorder
-                            border.width: 1
+                                LauncherButton {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    thickness: panel.thickness
+                                }
 
-                            Workspaces {
-                                anchors.centerIn: parent
-                                vertical: false
-                                cellSize: Math.round(panel.thickness * 0.55)
+                                Workspaces {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    vertical: false
+                                    cellSize: Math.round(panel.thickness * 0.55)
+                                }
                             }
                         }
                     }
                 }
 
-                // Grupo de baixo: audio + relogio
+                // Grupo de baixo: AudioIndicator + Relógio em uma única pílula de fundo
                 Loader {
                     anchors {
                         right: root.vertical ? undefined : parent.right
                         bottom: root.vertical ? parent.bottom : undefined
                         horizontalCenter: root.vertical ? parent.horizontalCenter : undefined
                         verticalCenter: root.vertical ? undefined : parent.verticalCenter
-                        rightMargin: root.vertical ? 0 : 14
-                        bottomMargin: root.vertical ? 14 : 0
+                        rightMargin: root.vertical ? 0 : 10
+                        bottomMargin: root.vertical ? 10 : 0
                     }
                     sourceComponent: root.vertical ? stackVertical : stackHorizontal
                 }
@@ -191,53 +186,50 @@ Scope {
                 Component {
                     id: stackVertical
                     Column {
-                        spacing: 8
+                        spacing: 6
 
-                        // AudioIndicator com fundo
+                        // Fundo único em pílula para AudioIndicator + Relógio
                         Rectangle {
                             anchors.horizontalCenter: parent.horizontalCenter
-                            width: Math.round(panel.thickness * 0.6) + 8
-                            height: Math.round(panel.thickness * 0.6) + 8
-                            radius: Math.round((Math.round(panel.thickness * 0.6) + 8) / 2)
-                            color: Theme.moduleBackground
-                            border.color: Theme.moduleBorder
-                            border.width: 1
-
-                            AudioIndicator {
-                                anchors.centerIn: parent
-                                thickness: panel.thickness
-                                vertical: true
-                                screenRef: panel.screen
-                                barPosition: Settings.barPosition
-                                barMargin: Settings.barMargin
-                                edgeInset: panel.lengthInset
-                            }
-                        }
-
-                        // Relógio com fundo
-                        Rectangle {
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            width: Math.round(panel.thickness * 0.40) * 2 + 20
-                            height: Math.round(panel.thickness * 0.34) * 2 + 2 + 16
-                            radius: Math.round(panel.thickness * 0.34) + 8
+                            width: Math.max(
+                                Math.round(panel.thickness * 0.6) + 16,
+                                Math.round(panel.thickness * 0.40) * 2 + 20
+                            )
+                            height: (Math.round(panel.thickness * 0.6) + 16) + 6 + (Math.round(panel.thickness * 0.34) * 2 + 2 + 16)
+                            radius: panel.pillRadius
                             color: Theme.moduleBackground
                             border.color: Theme.moduleBorder
                             border.width: 1
 
                             Column {
                                 anchors.centerIn: parent
-                                spacing: 2
-                                Text {
+                                spacing: 6
+
+                                AudioIndicator {
                                     anchors.horizontalCenter: parent.horizontalCenter
-                                    text: root.hours
-                                    color: Theme.barText
-                                    font.pixelSize: Math.round(panel.thickness * 0.34)
+                                    thickness: panel.thickness
+                                    vertical: true
+                                    screenRef: panel.screen
+                                    barPosition: Settings.barPosition
+                                    barMargin: Settings.barMargin
+                                    edgeInset: panel.lengthInset
                                 }
-                                Text {
+
+                                Column {
                                     anchors.horizontalCenter: parent.horizontalCenter
-                                    text: root.minutes
-                                    color: Theme.barText
-                                    font.pixelSize: Math.round(panel.thickness * 0.34)
+                                    spacing: 2
+                                    Text {
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        text: root.hours
+                                        color: Theme.barText
+                                        font.pixelSize: Math.round(panel.thickness * 0.34)
+                                    }
+                                    Text {
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        text: root.minutes
+                                        color: Theme.barText
+                                        font.pixelSize: Math.round(panel.thickness * 0.34)
+                                    }
                                 }
                             }
                         }
@@ -247,42 +239,40 @@ Scope {
                 Component {
                     id: stackHorizontal
                     Row {
-                        spacing: 8
+                        spacing: 6
 
-                        // AudioIndicator com fundo
+                        // Fundo único em pílula para AudioIndicator + Relógio
                         Rectangle {
-                            width: Math.round(panel.thickness * 0.6) + 8
-                            height: Math.round(panel.thickness * 0.6) + 8
-                            radius: Math.round((Math.round(panel.thickness * 0.6) + 8) / 2)
+                            width: (Math.round(panel.thickness * 0.6) + 16) + 6 + (Math.round(panel.thickness * 0.40) * 2 + 20)
+                            height: Math.max(
+                                Math.round(panel.thickness * 0.6) + 16,
+                                Math.round(panel.thickness * 0.40) + 16
+                            )
+                            radius: panel.pillRadius
                             color: Theme.moduleBackground
                             border.color: Theme.moduleBorder
                             border.width: 1
 
-                            AudioIndicator {
+                            Row {
                                 anchors.centerIn: parent
-                                thickness: panel.thickness
-                                vertical: false
-                                screenRef: panel.screen
-                                barPosition: Settings.barPosition
-                                barMargin: Settings.barMargin
-                                edgeInset: panel.lengthInset
-                            }
-                        }
+                                spacing: 6
 
-                        // Relógio com fundo
-                        Rectangle {
-                            width: Math.round(panel.thickness * 0.40) * 2 + 20
-                            height: Math.round(panel.thickness * 0.40) + 16
-                            radius: Math.round(panel.thickness * 0.40) / 2 + 8
-                            color: Theme.moduleBackground
-                            border.color: Theme.moduleBorder
-                            border.width: 1
+                                AudioIndicator {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    thickness: panel.thickness
+                                    vertical: false
+                                    screenRef: panel.screen
+                                    barPosition: Settings.barPosition
+                                    barMargin: Settings.barMargin
+                                    edgeInset: panel.lengthInset
+                                }
 
-                            Text {
-                                anchors.centerIn: parent
-                                text: root.hours + ":" + root.minutes
-                                color: Theme.barText
-                                font.pixelSize: Math.round(panel.thickness * 0.40)
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: root.hours + ":" + root.minutes
+                                    color: Theme.barText
+                                    font.pixelSize: Math.round(panel.thickness * 0.40)
+                                }
                             }
                         }
                     }
