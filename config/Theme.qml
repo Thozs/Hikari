@@ -256,6 +256,18 @@ Singleton {
         }
     }
 
+    function _computeLauncherItemBorder(baseOutline, accent, isDark) {
+        if (isDark) {
+            // Dark: border slightly darker than background, with subtle accent tint
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseOutline, 1.2, -0.15, accentHue)
+        } else {
+            // Light: border slightly darker than background
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseOutline, 0.4, -0.12, accentHue)
+        }
+    }
+
     // =========================================================================
     // INTEGRAÇÃO COM MATUGEN VIA PROCESS
     // =========================================================================
