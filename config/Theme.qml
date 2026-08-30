@@ -94,6 +94,16 @@ Singleton {
         : root._fixedOutline
 
     // =========================================================================
+    // MODULE BACKGROUND (para módulos da bar - ligeiramente mais escuro que barBackground)
+    // =========================================================================
+    readonly property color moduleBackground: (root.barUseMatugen && root._matugenLoaded)
+        ? root._computeModuleBackground(root._mBackground, root._mAccent, root.isDark)
+        : root._fixedSurfaceLow
+    readonly property color moduleBorder: (root.barUseMatugen && root._matugenLoaded)
+        ? root._computeModuleBorder(root._mOutlineVariant, root._mAccent, root.isDark)
+        : root._fixedOutlineVariant
+
+    // =========================================================================
     // ISDARK & DEBUG
     // =========================================================================
     readonly property list<color> wallpaperColors: (root.dynamicColorEnabled && wallpaperQuantizer.colors.length > 0) ? wallpaperQuantizer.colors : []
@@ -265,6 +275,33 @@ Singleton {
             // Light: border slightly darker than background
             const accentHue = root._rgbToHsl(accent).h
             return root._adjustColor(baseOutline, 0.4, -0.12, accentHue)
+        }
+    }
+
+    // =========================================================================
+    // MODULE BACKGROUND COMPUTATION
+    // =========================================================================
+    function _computeModuleBackground(baseBg, accent, isDark) {
+        if (isDark) {
+            // Dark: slightly darker than barBackground, with subtle accent tint
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseBg, 1.3, -0.08, accentHue)
+        } else {
+            // Light: slightly darker than barBackground (not pure white)
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseBg, 0.3, -0.06, accentHue)
+        }
+    }
+
+    function _computeModuleBorder(baseOutlineVariant, accent, isDark) {
+        if (isDark) {
+            // Dark: subtle border
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseOutlineVariant, 1.5, -0.05, accentHue)
+        } else {
+            // Light: visible but subtle border
+            const accentHue = root._rgbToHsl(accent).h
+            return root._adjustColor(baseOutlineVariant, 0.6, -0.08, accentHue)
         }
     }
 

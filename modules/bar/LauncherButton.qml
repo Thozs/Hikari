@@ -7,7 +7,17 @@ Item {
     required property int thickness
 
     readonly property int iconSize: Math.round(thickness * 0.55)
-    readonly property var iconCandidates: ["archlinux-logo", "archlinux", "distributor-logo-archlinux", "start-here-arch"]
+    // Ícones monocromáticos (symbolic) que podem ser tingidos via color
+    readonly property var iconCandidates: [
+        "archlinux-logo-symbolic",
+        "archlinux-symbolic",
+        "distributor-logo-archlinux-symbolic",
+        "start-here-arch-symbolic",
+        "archlinux-logo",
+        "archlinux",
+        "distributor-logo-archlinux",
+        "start-here-arch"
+    ]
     readonly property string iconSrc: {
         for (const name of iconCandidates) {
             const p = Quickshell.iconPath(name, true)
@@ -20,16 +30,19 @@ Item {
     implicitHeight: Math.round(thickness * 0.6)
 
     Image {
+        id: archIcon
         anchors.centerIn: parent
         width: root.iconSize
         height: root.iconSize
         visible: root.iconSrc !== ""
         source: root.iconSrc
+        // Tinge o ícone monocromático com uma cor ligeiramente mais escura que o texto da bar
+        color: root.iconSrc.indexOf("-symbolic") !== -1 ? Theme.barText : "transparent"
     }
 
     Text {
         anchors.centerIn: parent
-        visible: root.iconSrc === ""
+        visible: root.iconSrc === "" || root.iconSrc.indexOf("-symbolic") === -1
         text: "🐧"
         color: Theme.barText
         font.pixelSize: Math.round(root.thickness * 0.34)
