@@ -2,7 +2,6 @@ import Quickshell
 import Quickshell.Io
 import QtQuick
 import QtQuick.Controls
-import QtGraphicalEffects
 import "../../config"
 
 Scope {
@@ -66,21 +65,24 @@ Scope {
                 bottom: Settings.barPosition === "bottom" ? Settings.barMargin : (root.vertical ? panel.lengthInset : 0)
             }
 
+            // Sombra sutil (Rectangle atrás da pill)
+            Rectangle {
+                id: pillShadow
+                anchors.fill: parent
+                radius: panel.pillRadius
+                color: Qt.rgba(0, 0, 0, root.vertical ? 0.1 : 0.12)
+                visible: true
+                z: -1
+                // Offset leve para baixo/direita
+                x: root.vertical ? 1 : 0
+                y: root.vertical ? 0 : 1
+            }
+
             Rectangle {
                 id: pill
                 anchors.fill: parent
                 radius: panel.pillRadius
                 color: Theme.barBackground
-
-                // Sombra sutil para diferenciar do background branco
-                layer.enabled: true
-                layer.effect: DropShadow {
-                    horizontalOffset: 0
-                    verticalOffset: 1
-                    radius: 4
-                    samples: 8
-                    color: Qt.rgba(0, 0, 0, 0.15)
-                }
 
                 // Grupo do topo: icone do launcher colado nos workspaces
                 Loader {
