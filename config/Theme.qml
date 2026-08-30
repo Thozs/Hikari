@@ -106,16 +106,18 @@ Singleton {
     property color _mAccentText
     property color _mDanger
 
-    on_WallpaperPathChanged: root._runMatugen()
+    on_wallpaperPathChanged: root._runMatugen()
     onIsDarkChanged: root._runMatugen()
 
     function _runMatugen() {
         if (!root.dynamicColorEnabled || root._wallpaperPath === "") return
+        console.log("[Theme] _runMatugen chamado, path:", root._wallpaperPath, "isDark:", root.isDark)
         matugenProc.running = false
         matugenProc.command = [
             "matugen", "image", root._wallpaperPath,
             "--json", "hex",
-            "-m", root.isDark ? "dark" : "light"
+            "-m", root.isDark ? "dark" : "light",
+            "--scheme", "tonal-spot"
         ]
         matugenProc.running = true
     }
@@ -126,7 +128,6 @@ Singleton {
             id: matugenOut
             onDataChanged: {
                 if (!matugenOut.data) return
-                // Força a conversão do QByteArray/Object do C++ para String nativa do JS
                 const outText = String(matugenOut.data)
                 if (outText.trim() === "" || outText === "undefined") return
                 
@@ -152,6 +153,15 @@ Singleton {
                     console.log("[Theme] matugen carregado com sucesso (" + (root.isDark ? "dark" : "light") + ")")
                 } catch (e) {
                     console.log("[Theme] Erro ao parsear JSON do matugen:", e)
+                }
+            }
+        }
+        stderr: StdioCollector {
+            id: matugenErr
+            onDataChanged: {
+                if (matugenErr.data) {
+                    const errText = String(matugenErr.data).trim()
+                    if (errText !== "") console.log("[Theme] matugen stderr:", errText)
                 }
             }
         }
