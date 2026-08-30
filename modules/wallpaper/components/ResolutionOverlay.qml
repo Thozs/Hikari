@@ -79,8 +79,8 @@ Item {
         width: Math.min(parent.width - 40, 560)
         height: Math.min(parent.height - 60, 520)
         radius: 16
-        color: c.surface_container_low
-        border.color: c.outline_variant
+        color: c.surfaceLow
+        border.color: c.outlineVariant
         border.width: 1
 
         MouseArea { anchors.fill: parent; onClicked: {} }
@@ -96,13 +96,13 @@ Item {
                     text: "Escolher resolução"
                     font.family: overlay.fontDisplay
                     font.pixelSize: 18
-                    color: c.on_surface
+                    color: c.text
                     Layout.fillWidth: true
                 }
                 Rectangle {
                     width: 26; height: 26; radius: 13
-                    color: closeArea.containsMouse ? c.surface_container_high : "transparent"
-                    Text { anchors.centerIn: parent; text: "✕"; color: c.on_surface_variant; font.pixelSize: 12 }
+                    color: closeArea.containsMouse ? c.surfaceHigh : "transparent"
+                    Text { anchors.centerIn: parent; text: "✕"; color: c.textMuted; font.pixelSize: 12 }
                     MouseArea { id: closeArea; anchors.fill: parent; hoverEnabled: true; onClicked: overlay.open = false }
                 }
             }
@@ -112,7 +112,7 @@ Item {
 
                 Rectangle {
                     width: pcLabel.implicitWidth + 24; height: 30; radius: 15
-                    color: overlay.tab === 0 ? c.primary : c.surface_container
+                    color: overlay.tab === 0 ? c.accent : c.surface
                     Text {
                         id: pcLabel
                         anchors.centerIn: parent
@@ -120,14 +120,14 @@ Item {
                         font.family: overlay.fontBody
                         font.pixelSize: 12
                         font.bold: true
-                        color: overlay.tab === 0 ? c.on_primary : c.on_surface_variant
+                        color: overlay.tab === 0 ? c.accentText : c.textMuted
                     }
                     MouseArea { anchors.fill: parent; onClicked: overlay.tab = 0 }
                 }
 
                 Rectangle {
                     width: mobileLabel.implicitWidth + 24; height: 30; radius: 15
-                    color: overlay.tab === 1 ? c.primary : c.surface_container
+                    color: overlay.tab === 1 ? c.accent : c.surface
                     Text {
                         id: mobileLabel
                         anchors.centerIn: parent
@@ -135,7 +135,7 @@ Item {
                         font.family: overlay.fontBody
                         font.pixelSize: 12
                         font.bold: true
-                        color: overlay.tab === 1 ? c.on_primary : c.on_surface_variant
+                        color: overlay.tab === 1 ? c.accentText : c.textMuted
                     }
                     MouseArea { anchors.fill: parent; onClicked: overlay.tab = 1 }
                 }
@@ -151,7 +151,7 @@ Item {
                     font.pixelSize: 10
                     font.bold: true
                     font.letterSpacing: 1
-                    color: c.on_surface_variant
+                    color: c.textMuted
                 }
 
                 Row {
@@ -167,14 +167,14 @@ Item {
                             width: fmLabel.implicitWidth + 20
                             height: 28
                             radius: 8
-                            color: isSel ? c.primary : c.surface_container
+                            color: isSel ? c.accent : c.surface
                             Text {
                                 id: fmLabel
                                 anchors.centerIn: parent
                                 text: modelData.label
                                 font.family: overlay.fontBody
                                 font.pixelSize: 11
-                                color: isSel ? c.on_primary : c.on_surface
+                                color: isSel ? c.accentText : c.text
                             }
                             MouseArea { anchors.fill: parent; onClicked: overlay.selFillMode = modelData.value }
                         }
@@ -208,7 +208,7 @@ Item {
                                     font.pixelSize: 11
                                     font.bold: true
                                     font.letterSpacing: 1
-                                    color: c.on_surface_variant
+                                    color: c.textMuted
                                 }
 
                                 Flow {
@@ -223,9 +223,9 @@ Item {
                                             width: resLabel.implicitWidth + 20
                                             height: 30
                                             radius: 8
-                                            color: isSel ? c.primary : c.surface_container
+                                            color: isSel ? c.accent : c.surface
                                             border.width: isNative && !isSel ? 1.5 : 0
-                                            border.color: c.primary
+                                            border.color: c.accent
 
                                             Text {
                                                 id: resLabel
@@ -233,7 +233,7 @@ Item {
                                                 text: modelData.width + "×" + modelData.height
                                                 font.family: overlay.fontBody
                                                 font.pixelSize: 11
-                                                color: isSel ? c.on_primary : c.on_surface
+                                                color: isSel ? c.accentText : c.text
                                             }
 
                                             MouseArea {
@@ -244,20 +244,65 @@ Item {
                                     }
                                 }
                             }
+
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 6
+                                visible: Monitors.list.length > 0
+
+                                Text {
+                                    text: "SEUS MONITORES"
+                                    font.family: overlay.fontBody
+                                    font.pixelSize: 11
+                                    font.bold: true
+                                    font.letterSpacing: 1
+                                    color: c.textMuted
+                                }
+
+                                Flow {
+                                    Layout.fillWidth: true
+                                    spacing: 6
+
+                                    Repeater {
+                                        model: Monitors.list
+                                        delegate: Rectangle {
+                                            readonly property bool isSel: overlay.selWidth === modelData.width && overlay.selHeight === modelData.height
+                                            width: monLabel.implicitWidth + 20
+                                            height: 30
+                                            radius: 8
+                                            color: isSel ? c.accent : c.surfaceHigh
+
+                                            Text {
+                                                id: monLabel
+                                                anchors.centerIn: parent
+                                                text: modelData.name + " · " + modelData.width + "×" + modelData.height
+                                                font.family: overlay.fontBody
+                                                font.pixelSize: 11
+                                                color: isSel ? c.accentText : c.text
+                                            }
+
+                                            MouseArea {
+                                                anchors.fill: parent
+                                                onClicked: overlay.pickResolution(modelData.width, modelData.height, modelData.name)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                         ColumnLayout {
                             Layout.fillWidth: true
                             spacing: 6
-                            visible: Monitors.list.length > 0
+                            visible: overlay.tab === 1
 
                             Text {
-                                text: "SEUS MONITORES"
+                                text: "PRESETS COMUNS"
                                 font.family: overlay.fontBody
                                 font.pixelSize: 11
                                 font.bold: true
                                 font.letterSpacing: 1
-                                color: c.on_surface_variant
+                                color: c.textMuted
                             }
 
                             Flow {
@@ -265,84 +310,39 @@ Item {
                                 spacing: 6
 
                                 Repeater {
-                                    model: Monitors.list
+                                    model: Presets.mobilePresets
                                     delegate: Rectangle {
                                         readonly property bool isSel: overlay.selWidth === modelData.width && overlay.selHeight === modelData.height
-                                        width: monLabel.implicitWidth + 20
-                                        height: 30
+                                        width: mobResCol.implicitWidth + 20
+                                        height: 42
                                         radius: 8
-                                        color: isSel ? c.primary : c.surface_container_high
+                                        color: isSel ? c.accent : c.surface
 
-                                        Text {
-                                            id: monLabel
+                                        ColumnLayout {
+                                            id: mobResCol
                                             anchors.centerIn: parent
-                                            text: modelData.name + " · " + modelData.width + "×" + modelData.height
-                                            font.family: overlay.fontBody
-                                            font.pixelSize: 11
-                                            color: isSel ? c.on_primary : c.on_surface
+                                            spacing: 1
+                                            Text {
+                                                text: modelData.label
+                                                font.family: overlay.fontBody
+                                                font.pixelSize: 10
+                                                font.bold: true
+                                                color: isSel ? c.accentText : c.text
+                                                Layout.alignment: Qt.AlignHCenter
+                                            }
+                                            Text {
+                                                text: modelData.width + "×" + modelData.height
+                                                font.family: overlay.fontBody
+                                                font.pixelSize: 9
+                                                color: isSel ? c.accentText : c.textMuted
+                                                Layout.alignment: Qt.AlignHCenter
+                                            }
                                         }
 
                                         MouseArea {
                                             anchors.fill: parent
-                                            onClicked: overlay.pickResolution(modelData.width, modelData.height, modelData.name)
+                                            onClicked: overlay.pickResolution(modelData.width, modelData.height, modelData.label)
                                         }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    ColumnLayout {
-                        Layout.fillWidth: true
-                        spacing: 6
-                        visible: overlay.tab === 1
-
-                        Text {
-                            text: "PRESETS COMUNS"
-                            font.family: overlay.fontBody
-                            font.pixelSize: 11
-                            font.bold: true
-                            font.letterSpacing: 1
-                            color: c.on_surface_variant
-                        }
-
-                        Flow {
-                            Layout.fillWidth: true
-                            spacing: 6
-
-                            Repeater {
-                                model: Presets.mobilePresets
-                                delegate: Rectangle {
-                                    readonly property bool isSel: overlay.selWidth === modelData.width && overlay.selHeight === modelData.height
-                                    width: mobResCol.implicitWidth + 20
-                                    height: 42
-                                    radius: 8
-                                    color: isSel ? c.primary : c.surface_container
-
-                                    ColumnLayout {
-                                        id: mobResCol
-                                        anchors.centerIn: parent
-                                        spacing: 1
-                                        Text {
-                                            text: modelData.label
-                                            font.family: overlay.fontBody
-                                            font.pixelSize: 10
-                                            font.bold: true
-                                            color: isSel ? c.on_primary : c.on_surface
-                                            Layout.alignment: Qt.AlignHCenter
-                                        }
-                                        Text {
-                                            text: modelData.width + "×" + modelData.height
-                                            font.family: overlay.fontBody
-                                            font.pixelSize: 9
-                                            color: isSel ? c.on_primary : c.on_surface_variant
-                                            Layout.alignment: Qt.AlignHCenter
-                                        }
-                                    }
-
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        onClicked: overlay.pickResolution(modelData.width, modelData.height, modelData.label)
                                     }
                                 }
                             }
@@ -355,18 +355,18 @@ Item {
                 Layout.fillWidth: true
                 spacing: 8
 
-                Text { text: "Custom:"; font.family: overlay.fontBody; font.pixelSize: 11; color: c.on_surface_variant }
+                Text { text: "Custom:"; font.family: overlay.fontBody; font.pixelSize: 11; color: c.textMuted }
 
                 Rectangle {
                     width: 70; height: 28; radius: 6
-                    color: c.surface_container
-                    border.color: customWidthField.activeFocus ? c.primary : c.outline_variant
+                    color: c.surface
+                    border.color: customWidthField.activeFocus ? c.accent : c.outlineVariant
                     border.width: 1
 
                     TextInput {
                         id: customWidthField
                         anchors { fill: parent; margins: 6 }
-                        color: c.on_surface
+                        color: c.text
                         font.pixelSize: 11
                         horizontalAlignment: TextInput.AlignHCenter
                         verticalAlignment: TextInput.AlignVCenter
@@ -374,18 +374,18 @@ Item {
                     }
                 }
 
-                Text { text: "×"; color: c.on_surface_variant; font.pixelSize: 12 }
+                Text { text: "×"; color: c.textMuted; font.pixelSize: 12 }
 
                 Rectangle {
                     width: 70; height: 28; radius: 6
-                    color: c.surface_container
-                    border.color: customHeightField.activeFocus ? c.primary : c.outline_variant
+                    color: c.surface
+                    border.color: customHeightField.activeFocus ? c.accent : c.outlineVariant
                     border.width: 1
 
                     TextInput {
                         id: customHeightField
                         anchors { fill: parent; margins: 6 }
-                        color: c.on_surface
+                        color: c.text
                         font.pixelSize: 11
                         horizontalAlignment: TextInput.AlignHCenter
                         verticalAlignment: TextInput.AlignVCenter
@@ -395,8 +395,8 @@ Item {
 
                 Rectangle {
                     width: 50; height: 28; radius: 6
-                    color: c.surface_container_high
-                    Text { anchors.centerIn: parent; text: "usar"; font.family: overlay.fontBody; font.pixelSize: 10; color: c.on_surface }
+                    color: c.surfaceHigh
+                    Text { anchors.centerIn: parent; text: "usar"; font.family: overlay.fontBody; font.pixelSize: 10; color: c.text }
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
@@ -420,21 +420,21 @@ Item {
                     text: overlay.selWidth > 0 ? ("Selecionado: " + overlay.selLabel + " (" + overlay.selWidth + "×" + overlay.selHeight + ")") : "Nenhuma resolução selecionada"
                     font.family: overlay.fontBody
                     font.pixelSize: 11
-                    color: c.on_surface_variant
+                    color: c.textMuted
                     elide: Text.ElideRight
                 }
 
                 Rectangle {
                     width: 90; height: 32; radius: 16
-                    color: c.surface_container
-                    Text { anchors.centerIn: parent; text: "Cancelar"; font.family: overlay.fontBody; font.pixelSize: 11; color: c.on_surface }
+                    color: c.surface
+                    Text { anchors.centerIn: parent; text: "Cancelar"; font.family: overlay.fontBody; font.pixelSize: 11; color: c.text }
                     MouseArea { anchors.fill: parent; onClicked: overlay.open = false }
                 }
 
                 Rectangle {
                     width: overlay.tab === 0 ? 130 : 90
                     height: 32; radius: 16
-                    color: overlay.selWidth > 0 ? c.primary : c.surface_container
+                    color: overlay.selWidth > 0 ? c.accent : c.surface
                     opacity: overlay.selWidth > 0 ? 1 : 0.5
                     Text {
                         anchors.centerIn: parent
@@ -442,7 +442,7 @@ Item {
                         font.family: overlay.fontBody
                         font.pixelSize: 11
                         font.bold: true
-                        color: c.on_primary
+                        color: c.accentText
                     }
                     MouseArea {
                         anchors.fill: parent
