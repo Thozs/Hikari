@@ -2,6 +2,7 @@ import Quickshell
 import Quickshell.Io
 import QtQuick
 import QtQuick.Controls
+import QtGraphicalEffects
 import "../../config"
 
 Scope {
