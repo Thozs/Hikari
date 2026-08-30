@@ -7,7 +7,7 @@ Item {
     required property int thickness
 
     readonly property int iconSize: Math.round(thickness * 0.55)
-    // Ícones monocromáticos (symbolic) que podem ser tingidos via color
+    // Ícones monocromáticos (symbolic) - usamos como estão, o fundo do módulo dá contraste
     readonly property var iconCandidates: [
         "archlinux-logo-symbolic",
         "archlinux-symbolic",
@@ -36,13 +36,12 @@ Item {
         height: root.iconSize
         visible: root.iconSrc !== ""
         source: root.iconSrc
-        // Tinge o ícone monocromático com uma cor ligeiramente mais escura que o texto da bar
-        color: root.iconSrc.indexOf("-symbolic") !== -1 ? Theme.barText : "transparent"
+        // Ícones symbolic são monocromáticos (branco com transparência) - funcionam no fundo escuro do módulo
     }
 
     Text {
         anchors.centerIn: parent
-        visible: root.iconSrc === "" || root.iconSrc.indexOf("-symbolic") === -1
+        visible: root.iconSrc === ""
         text: "🐧"
         color: Theme.barText
         font.pixelSize: Math.round(root.thickness * 0.34)
