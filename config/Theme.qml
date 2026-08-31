@@ -20,6 +20,7 @@ Singleton {
     readonly property color _fixedOutlineVariant: "#6c7086"
     readonly property color _fixedAccent: "#cba6f7"
     readonly property color _fixedAccentText: "#1e1e2e"
+    readonly property color _fixedSecondary: "#94e2d5"
     readonly property color _fixedDanger: "#f38ba8"
 
     // =========================================================================
@@ -48,16 +49,19 @@ Singleton {
     readonly property color danger: (root.dynamicColorEnabled && root._matugenLoaded) ? root._mDanger : root._fixedDanger
 
     // Propriedades específicas da bar (respeitam barUseMatugen)
-    readonly property color barBackground: (root.barUseMatugen && root._matugenLoaded) ? root._mBackground : root._fixedBackground
+    readonly property color barBackground: (root.barUseMatugen && root._matugenLoaded)
+        ? root._mBackground
+        : root._fixedBackground
     readonly property color barSurfaceLow: (root.barUseMatugen && root._matugenLoaded) ? root._mSurfaceLow : root._fixedSurfaceLow
-    readonly property color barSurface: (root.barUseMatugen && root._matugenLoaded) ? root._mSurface : root._fixedSurface
+    readonly property color barSurface: (root.barUseMatugen && root._matugenLoaded)
+        ? root._adjustColor(root._mSurface, root.isDark ? 2.2 : 0.5, root.isDark ? 0.03 : -0.01, root._getAccentHue())
+        : root._fixedSurface
     readonly property color barSurfaceHigh: (root.barUseMatugen && root._matugenLoaded) ? root._mSurfaceHigh : root._fixedSurfaceHigh
     readonly property color barSurfaceHighest: (root.barUseMatugen && root._matugenLoaded) ? root._mSurfaceHighest : root._fixedSurfaceHighest
     readonly property color barText: (root.barUseMatugen && root._matugenLoaded) ? root._mText : root._fixedText
     readonly property color barTextMuted: (root.barUseMatugen && root._matugenLoaded) ? root._mTextMuted : root._fixedTextMuted
     readonly property color barOutline: (root.barUseMatugen && root._matugenLoaded) ? root._mOutline : root._fixedOutline
     readonly property color barOutlineVariant: (root.barUseMatugen && root._matugenLoaded) ? root._mOutlineVariant : root._fixedOutlineVariant
-    readonly property color barAccent: (root.barUseMatugen && root._matugenLoaded) ? root._mAccent : root._fixedAccent
     readonly property color barAccentText: (root.barUseMatugen && root._matugenLoaded) ? root._mAccentText : root._fixedAccentText
     readonly property color barDanger: (root.barUseMatugen && root._matugenLoaded) ? root._mDanger : root._fixedDanger
 
@@ -93,6 +97,17 @@ Singleton {
         ? root._computeLauncherItemBorder(root._mOutline, root._mAccent, root.isDark)
         : root._fixedOutline
 
+
+	// No theme.qml, troque a definição atual de barAccent por:
+readonly property color barAccent: (root.barUseMatugen && root._matugenLoaded)
+    ? root._adjustColor(root._mAccent, 1.35, root.isDark ? 0.05 : -0.03, undefined)
+    : root._fixedAccent
+readonly property color barSecondary: (root.barUseMatugen && root._matugenLoaded)
+    ? root._mSecondary
+    : root._fixedSecondary
+readonly property color barOnSecondary: (root.barUseMatugen && root._matugenLoaded)
+    ? root._mOnSecondary
+    : root._fixedAccentText
     // =========================================================================
     // MODULE BACKGROUND (para módulos da bar - ligeiramente mais escuro que barBackground)
     // =========================================================================
@@ -322,6 +337,8 @@ Singleton {
     property color _mAccent
     property color _mAccentText
     property color _mDanger
+    property color _mSecondary
+    property color _mOnSecondary
 
     // Cache simples: evita rodar matugen de novo pro mesmo wallpaper+mode
     property string _lastMatugenPath: ""
@@ -343,8 +360,9 @@ Singleton {
             "matugen", "image",
             "--json", "hex",
             "--mode", root.isDark ? "dark" : "light",
-            "--type", "scheme-tonal-spot",
+            "--type", "scheme-fidelity",
             "--source-color-index", "0",
+	    "--fallback-color", "#585b70",
             root._wallpaperPath
         ]
         matugenProc.running = true
@@ -389,6 +407,8 @@ Singleton {
                     root._mAccent = mc("primary")
                     root._mAccentText = mc("on_primary")
                     root._mDanger = mc("error")
+                    root._mSecondary = mc("secondary")
+                    root._mOnSecondary = mc("on_secondary")
 
                     // Atualiza cache
                     root._lastMatugenPath = root._wallpaperPath

@@ -85,9 +85,10 @@ Scope {
 
                 // Grupo do topo: LauncherButton + Workspaces
                 Column {
+                    id: topGroup
                     anchors {
                         top: parent.top
-                        topMargin: panel.lengthInset
+                        topMargin: 8
                         horizontalCenter: parent.horizontalCenter
                     }
                     spacing: 10
@@ -104,11 +105,25 @@ Scope {
                     }
                 }
 
+                // Titulo da janela em foco - preenche o espaco entre os grupos
+                ActiveWindowTitle {
+                    anchors {
+                        top: topGroup.bottom
+                        bottom: bottomGroup.top
+                        topMargin: 14
+                        bottomMargin: 14
+                        horizontalCenter: parent.horizontalCenter
+                    }
+                    thickness: panel.thickness
+                    vertical: true
+                }
+
                 // Grupo de baixo: AudioIndicator + Relógio
                 Column {
+                    id: bottomGroup
                     anchors {
                         bottom: parent.bottom
-                        bottomMargin: panel.lengthInset
+                        bottomMargin: 8
                         horizontalCenter: parent.horizontalCenter
                     }
                     spacing: 10
@@ -152,6 +167,7 @@ Scope {
 
                 // Grupo da esquerda: LauncherButton + Workspaces
                 Row {
+                    id: leftGroup
                     anchors {
                         left: parent.left
                         leftMargin: panel.lengthInset
@@ -171,8 +187,21 @@ Scope {
                     }
                 }
 
+                ActiveWindowTitle {
+                    anchors {
+                        left: leftGroup.right
+                        right: rightGroup.left
+                        leftMargin: 14
+                        rightMargin: 14
+                        verticalCenter: parent.verticalCenter
+                    }
+                    thickness: panel.thickness
+                    vertical: false
+                }
+
                 // Grupo da direita: AudioIndicator + Relógio
                 Row {
+                    id: rightGroup
                     anchors {
                         right: parent.right
                         rightMargin: panel.lengthInset

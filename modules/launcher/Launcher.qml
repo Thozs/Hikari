@@ -27,11 +27,9 @@ Scope {
         if (query.startsWith("/")) {
             const actions = [
                 { label: "🔄 Recarregar Shell", kind: "action", command: "reload" },
-                { label: "🔧 Reiniciar Shell", kind: "action", command: "restart" },
                 { label: "📝 Editar Configuração", kind: "action", command: "edit-config" },
                 { label: "🖼️ Abrir Seletor de Wallpaper", kind: "action", command: "wallpaper" },
-                { label: "🔊 Abrir Controle de Áudio", kind: "action", command: "audio" },
-                { label: "🌙 Alternar Tema Claro/Escuro", kind: "action", command: "toggle-theme" },
+                { label: "📐 Trocar Posição da Barra", kind: "action", command: "cycle-bar-position" },
                 { label: "📊 Mostrar Informações do Sistema", kind: "action", command: "sysinfo" },
                 { label: "❌ Sair do Arnyx Shell", kind: "action", command: "quit" }
             ]
@@ -108,21 +106,17 @@ Scope {
                     if (item.command === "quit") {
                         Qt.quit()
                     } else if (item.command === "reload") {
-                        Quickshell.execDetached(["quickshell", "kill", "-c", "arnyx-qs"])
-                        Quickshell.execDetached(["quickshell", "-c", "arnyx-qs"])
-                    } else if (item.command === "restart") {
-                        Quickshell.execDetached(["quickshell", "kill", "-c", "arnyx-qs"])
-                        Quickshell.execDetached(["quickshell", "-c", "arnyx-qs"])
+                        Quickshell.execDetached(["sh", "-c", "quickshell kill -c arnyx-qs; sleep 0.3; quickshell -c arnyx-qs &"])
                     } else if (item.command === "edit-config") {
-                        Quickshell.execDetached(["kitty", "-e", "nvim", "~/.config/quickshell/arnyx-qs"])
+                        Quickshell.execDetached(["sh", "-c", "kitty -e nvim ~/.config/quickshell/arnyx-qs"])
                     } else if (item.command === "wallpaper") {
                         Quickshell.execDetached(["quickshell", "ipc", "-c", "arnyx-qs", "call", "wallpaper", "toggle"])
-                    } else if (item.command === "audio") {
-                        Quickshell.execDetached(["quickshell", "ipc", "-c", "arnyx-qs", "call", "audio", "toggle"])
-                    } else if (item.command === "toggle-theme") {
-                        Theme.dynamicColorEnabled = !Theme.dynamicColorEnabled
                     } else if (item.command === "sysinfo") {
-                        Quickshell.execDetached(["kitty", "-e", "fastfetch"])
+                        Quickshell.execDetached(["kitty", "--hold", "-e", "fastfetch"])
+                    } else if (item.command === "cycle-bar-position") {
+                        const order = ["left", "top", "right", "bottom"]
+                        const idx = order.indexOf(Settings.barPosition)
+                        Settings.barPosition = order[(idx + 1) % order.length]
                     }
                 }
 

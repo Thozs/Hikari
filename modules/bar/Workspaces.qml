@@ -10,16 +10,32 @@ Item {
     property int workspaceCount: 5
 
     readonly property int iconSize: Math.round(cellSize * 0.78)
-    readonly property int fontSize: Math.round(cellSize * 0.5)
+    readonly property int dotSize: Math.max(4, Math.round(cellSize * 0.24))
     readonly property int cellSpacing: Math.max(3, Math.round(cellSize * 0.22))
+    readonly property int trackPadding: Math.max(4, Math.round(cellSize * 0.28))
 
-    implicitWidth: vertical ? cellSize : content.implicitWidth
-    implicitHeight: vertical ? content.implicitHeight : cellSize
-    Loader {
-        id: content
+    implicitWidth: vertical ? cellSize + trackPadding * 2 : track.implicitWidth
+    implicitHeight: vertical ? track.implicitHeight : cellSize + trackPadding * 2
+
+    // Trilho de fundo - cor diferente da barra (moduleBackground/moduleBorder,
+    // ja calculados via matugen a partir do wallpaper)
+    Rectangle {
+        id: track
         anchors.centerIn: parent
-        sourceComponent: root.vertical ? columnComp : rowComp
+        implicitWidth: content.implicitWidth + root.trackPadding * 2
+        implicitHeight: content.implicitHeight + root.trackPadding * 2
+        radius: width < height ? width / 2 : height / 2
+        color: Theme.barSecondary
+        border.color: Theme.barOutlineVariant
+        border.width: 1
+
+        Loader {
+            id: content
+            anchors.centerIn: parent
+            sourceComponent: root.vertical ? columnComp : rowComp
+        }
     }
+
     Component {
         id: rowComp
         Row { spacing: root.cellSpacing; Repeater { model: root.workspaceCount; delegate: wsDelegate } }
@@ -55,11 +71,11 @@ Item {
             width: root.cellSize
             height: root.cellSize
             radius: Math.round(root.cellSize * 0.32)
-            // Sem borda - o fundo da pílula do grupo já dá o contorno
+            // Sem borda propria - o trilho ja da o contorno do grupo
             color: wsRect.active
                 ? Theme.barAccent
                 : (wsRect.hasToplevel
-                    ? Qt.rgba(Theme.barText.r, Theme.barText.g, Theme.barText.b, 0.16)
+                    ? Qt.rgba(Theme.barOnSecondary.r, Theme.barOnSecondary.g, Theme.barOnSecondary.b, 0.22)
                     : "transparent")
 
             Behavior on color { ColorAnimation { duration: 120 } }
@@ -72,13 +88,15 @@ Item {
                 opacity: wsRect.active ? 1 : 0.85
                 source: wsRect.desktopEntry ? Quickshell.iconPath(wsRect.desktopEntry.icon, "") : ""
             }
-            Text {
+            // Ponto liso no lugar do numero, quando nao ha icone de app
+            Rectangle {
                 anchors.centerIn: parent
                 visible: wsRect.desktopEntry === null
-                text: wsId
-                color: wsRect.active ? Theme.barAccentText : Theme.barText
-                opacity: wsRect.active ? 1 : (wsRect.hasToplevel ? 0.85 : 0.35)
-                font.pixelSize: root.fontSize
+                width: root.dotSize
+                height: root.dotSize
+                radius: root.dotSize / 2
+                color: wsRect.active ? Theme.barAccentText : Theme.barOnSecondary
+                opacity: wsRect.active ? 1 : (wsRect.hasToplevel ? 0.9 : 0.55)
             }
             MouseArea {
                 anchors.fill: parent
