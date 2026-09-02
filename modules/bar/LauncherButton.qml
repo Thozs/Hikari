@@ -39,7 +39,7 @@ Item {
         cursorShape: Qt.PointingHandCursor
         onClicked: {
             console.log("[LauncherButton] Toggle launcher via IPC")
-            Quickshell.execDetached(["quickshell", "ipc", "-c", "arnyx-qs", "call", "launcher", "toggle"])
+            Quickshell.execDetached(["quickshell", "ipc", "-c", "hikari", "call", "launcher", "toggle"])
         }
     }
 }

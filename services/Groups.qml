@@ -7,7 +7,7 @@ import Quickshell.Io
 Singleton {
     id: root
 
-    readonly property string configDir: Quickshell.env("HOME") + "/.config/arnyx-qs"
+    readonly property string configDir: Quickshell.env("HOME") + "/.config/hikari"
     readonly property string groupsPath: root.configDir + "/groups.json"
     property bool ready: false
 

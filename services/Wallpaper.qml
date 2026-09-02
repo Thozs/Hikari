@@ -326,7 +326,7 @@ Singleton {
         }
     }
 
-    readonly property string configDir: Quickshell.env("HOME") + "/.config/arnyx-qs"
+    readonly property string configDir: Quickshell.env("HOME") + "/.config/hikari"
     readonly property string statePath: root.configDir + "/wallpaper.json"
 
     property int _retryCount: 0

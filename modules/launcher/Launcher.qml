@@ -106,11 +106,11 @@ Scope {
                     if (item.command === "quit") {
                         Qt.quit()
                     } else if (item.command === "reload") {
-                        Quickshell.execDetached(["sh", "-c", "quickshell kill -c arnyx-qs; sleep 0.3; quickshell -c arnyx-qs &"])
+                        Quickshell.execDetached(["sh", "-c", "quickshell kill -c hikari; sleep 0.3; quickshell -c hikari &"])
                     } else if (item.command === "edit-config") {
-                        Quickshell.execDetached(["sh", "-c", "kitty -e nvim ~/.config/quickshell/arnyx-qs"])
+                        Quickshell.execDetached(["sh", "-c", "kitty -e nvim ~/.config/quickshell/hikari"])
                     } else if (item.command === "wallpaper") {
-                        Quickshell.execDetached(["quickshell", "ipc", "-c", "arnyx-qs", "call", "wallpaper", "toggle"])
+                        Quickshell.execDetached(["quickshell", "ipc", "-c", "hikari", "call", "wallpaper", "toggle"])
                     } else if (item.command === "sysinfo") {
                         Quickshell.execDetached(["kitty", "--hold", "-e", "fastfetch"])
                     } else if (item.command === "cycle-bar-position") {
